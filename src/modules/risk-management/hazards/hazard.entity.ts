@@ -7,35 +7,35 @@ import { RiskAssessment } from '../risk-assesment/risk-assessment.entity';
 @Entity('hazards')
 export class Hazard extends BaseEntity {
   @Column({ name: 'hazard_family_id' })
-  hazardFamilyId: string;
+  hazardFamilyId!: string;
 
   @Column({ name: 'company_id', nullable: true })
-  companyId: string | null;
+  companyId!: string | null;
 
   @Column({ length: 255 })
-  name: string;
+  name!: string;
 
   @Column({ type: 'text', nullable: true })
-  description: string | null;
+  description!: string | null;
 
   // Effects on health or security
   @Column({ name: 'possible_effects', type: 'text', nullable: true })
-  possibleEffects: string | null;
+  possibleEffects!: string | null;
 
   // Relationships
   @ManyToOne(() => HazardFamily, (hazardFamily) => hazardFamily.hazards, {
     onDelete: 'RESTRICT',
   })
   @JoinColumn({ name: 'hazard_family_id' })
-  hazardFamily: HazardFamily;
+  hazardFamily!: HazardFamily;
 
   @ManyToOne(() => Company, (company) => company.hazards, {
     onDelete: 'CASCADE',
     nullable: true,
   })
   @JoinColumn({ name: 'company_id' })
-  company: Company | null;
+  company!: Company | null;
 
   @OneToMany(() => RiskAssessment, (ra) => ra.hazard)
-  riskAssessments: RiskAssessment[];
+  riskAssessments!: RiskAssessment[];
 }

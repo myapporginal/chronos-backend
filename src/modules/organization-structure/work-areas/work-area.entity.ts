@@ -6,20 +6,20 @@ import { RiskAssessment } from '@modules/risk-management/risk-assesment/risk-ass
 @Entity('work_areas')
 export class WorkArea extends BaseEntity {
   @Column({ name: 'work_center_id' })
-  workCenterId: string;
+  workCenterId!: string;
 
   @Column({ length: 200 })
-  name: string;
+  name!: string;
 
   @Column({ nullable: true, type: 'text' })
-  description: string | null;
+  description!: string | null;
 
   @ManyToOne(() => WorkCenter, (workCenter) => workCenter.workAreas, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'work_center_id' })
-  workCenter: WorkCenter;
+  workCenter!: WorkCenter;
 
   @OneToMany(() => RiskAssessment, (ra) => ra.workArea)
-  riskAssessments: RiskAssessment[];
+  riskAssessments!: RiskAssessment[];
 }

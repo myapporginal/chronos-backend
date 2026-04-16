@@ -1,8 +1,9 @@
 import { ConfigService } from '@common/utils/services/config.service';
 
 export class AppConfigService extends ConfigService {
-  constructor(env: Record<string, string | undefined>) {
-    super(env);
+  constructor() {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    super(process.env as Record<string, string | undefined>);
   }
 
   port(): number {

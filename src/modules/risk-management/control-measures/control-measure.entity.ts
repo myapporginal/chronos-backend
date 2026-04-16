@@ -7,49 +7,49 @@ import { User } from '@modules/access-control/users/user.entity';
 @Entity('control_measures')
 export class ControlMeasure extends BaseEntity {
   @Column({ name: 'risk_assessment_id' })
-  riskAssessmentId: string;
+  riskAssessmentId!: string;
 
   @Column({ name: 'company_id' })
-  companyId: string;
+  companyId!: string;
 
   @Column({ name: 'responsible_id' })
-  responsibleId: string;
+  responsibleId!: string;
 
   @Column({
     name: 'hierarchy_level',
     type: 'enum',
     enum: ControlHierarchyLevel,
   })
-  hierarchyLevel: ControlHierarchyLevel;
+  hierarchyLevel!: ControlHierarchyLevel;
 
   @Column({ type: 'text' })
-  description: string;
+  description!: string;
 
   @Column({ name: 'due_date', type: 'date' })
-  dueDate: string;
+  dueDate!: string;
 
   @Column({ name: 'completion_date', type: 'date', nullable: true })
-  completionDate: string | null;
+  completionDate!: string | null;
 
   @Column({
     type: 'enum',
     enum: ControlStatus,
     default: ControlStatus.PENDING,
   })
-  status: ControlStatus;
+  status!: ControlStatus;
 
   // 1–5: effectiveness rating for audits
   @Column({ name: 'effectiveness_rating', type: 'smallint', nullable: true })
-  effectivenessRating: number | null;
+  effectivenessRating!: number | null;
 
   // Relaciones
   @ManyToOne(() => RiskAssessment, (ra) => ra.controlMeasures, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'risk_assessment_id' })
-  riskAssessment: RiskAssessment;
+  riskAssessment!: RiskAssessment;
 
   @ManyToOne(() => User, (u) => u.controlMeasures, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'responsible_id' })
-  responsible: User;
+  responsible!: User;
 }

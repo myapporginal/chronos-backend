@@ -9,48 +9,48 @@ import { ControlMeasure } from '@modules/risk-management/control-measures/contro
 @Entity('users')
 export class User extends BaseEntity {
   @Column({ name: 'company_id' })
-  companyId: string;
+  companyId!: string;
 
   @Column({ unique: true, length: 255 })
-  email: string;
+  email!: string;
 
   @Column({ name: 'password', length: 255 })
-  password: string;
+  password!: string;
 
   @Column({ name: 'first_name', length: 100 })
-  firstName: string;
+  firstName!: string;
 
   @Column({ name: 'last_name', length: 100 })
-  lastName: string;
+  lastName!: string;
 
   @Column({ name: 'role_id' })
-  roleId: string;
+  roleId!: string;
 
   @Column({ name: 'is_active', default: true })
-  isActive: boolean;
+  isActive!: boolean;
 
   @Column({ name: 'last_login_at', nullable: true, type: 'timestamp' })
-  lastLoginAt: string | null;
+  lastLoginAt!: string | null;
 
   // Relations
   @ManyToOne(() => Company, (company) => company.users, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'company_id' })
-  company: Company;
+  company!: Company;
 
   @ManyToOne(() => Role, (role) => role.users, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'role_id' })
-  role: Role;
+  role!: Role;
 
   @OneToMany(() => Employee, (employee) => employee.user)
-  employees: Employee[];
+  employees!: Employee[];
 
   @OneToMany(() => RiskAssessment, (ra) => ra.responsible)
-  riskAssessments: RiskAssessment[];
+  riskAssessments!: RiskAssessment[];
 
   @OneToMany(() => ControlMeasure, (cm) => cm.responsible)
-  controlMeasures: ControlMeasure[];
+  controlMeasures!: ControlMeasure[];
 }

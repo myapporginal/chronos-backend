@@ -6,15 +6,15 @@ import { Hazard } from '../hazards/hazard.entity';
 export class HazardFamily extends BaseEntity {
   // Code of clasification by GTC-45
   @Column({ name: 'code', length: 10 })
-  code: string;
+  code!: string;
 
   @Column({ length: 100 })
-  name: string;
+  name!: string;
 
   @Column({ type: 'text', nullable: true })
-  description: string | null;
+  description!: string | null;
 
   // Relationships
   @OneToMany(() => Hazard, (hazard) => hazard.hazardFamily)
-  hazards: Hazard[];
+  hazards!: Hazard[];
 }

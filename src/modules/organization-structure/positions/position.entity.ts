@@ -7,29 +7,29 @@ import { RiskAssessment } from '@modules/risk-management/risk-assesment/risk-ass
 @Entity('positions')
 export class Position extends BaseEntity {
   @Column({ name: 'work_center_id ' })
-  workCenterId: string;
+  workCenterId!: string;
 
   @Column({ length: 200 })
-  name: string;
+  name!: string;
 
   @Column({ type: 'text', nullable: true })
-  description: string | null;
+  description!: string | null;
 
   @Column({ name: 'risk_level', type: 'smallint', nullable: true })
-  riskLevel: number | null;
+  riskLevel!: number | null;
 
   @Column({ name: 'is_active', default: true })
-  isActive: boolean;
+  isActive!: boolean;
 
   @ManyToOne(() => WorkCenter, (workCenter) => workCenter.positions, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'work_center_id' })
-  workCenter: WorkCenter;
+  workCenter!: WorkCenter;
 
   @OneToMany(() => Employee, (employee) => employee.position)
-  employees: Employee[];
+  employees!: Employee[];
 
   @OneToMany(() => RiskAssessment, (ra) => ra.position)
-  riskAssessments: RiskAssessment[];
+  riskAssessments!: RiskAssessment[];
 }

@@ -7,40 +7,40 @@ import { Hazard } from '@modules/risk-management/hazards/hazard.entity';
 @Entity('companies')
 export class Company extends BaseEntity {
   @Column({ unique: true })
-  nit: string;
+  nit!: string;
 
   @Column()
-  name: string;
+  name!: string;
 
   // Code CIIU of economic activity (Decreto 1607/2002)
   @Column({ name: 'economic_activity', length: 10 })
-  economicActivity: string;
+  economicActivity!: string;
 
   @Column({ name: 'risk_class', type: 'smallint' })
-  riskClass: number;
+  riskClass!: number;
 
   @Column({ name: 'employee_count', type: 'int', default: 0 })
-  employeeCount: number;
+  employeeCount!: number;
 
   @Column({ length: 100 })
-  city: string;
+  city!: string;
 
   @Column({ length: 100 })
-  department: string;
+  department!: string;
 
   @Column({ type: 'varchar', name: 'arl_name', length: 100, nullable: true })
-  arlName: string | null;
+  arlName!: string | null;
 
   @Column({ default: true, name: 'is_active' })
-  isActive: boolean;
+  isActive!: boolean;
 
   // Relations
   @OneToMany(() => WorkCenter, (workCenter) => workCenter.company)
-  workCenters: WorkCenter[];
+  workCenters!: WorkCenter[];
 
   @OneToMany(() => User, (user) => user.company)
-  users: User[];
+  users!: User[];
 
   @OneToMany(() => Hazard, (hazard) => hazard.company)
-  hazards: Hazard[];
+  hazards!: Hazard[];
 }

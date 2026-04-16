@@ -1,7 +1,5 @@
 import 'dotenv/config';
-import { Injectable } from '@nestjs/common';
 
-@Injectable()
 export class ConfigService {
   private static _instance: unknown;
 

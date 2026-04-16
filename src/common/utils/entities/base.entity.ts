@@ -7,14 +7,14 @@ import {
 
 export abstract class BaseEntity {
   @PrimaryColumn('uuid')
-  id: string;
+  id!: string;
 
   @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @DeleteDateColumn({ name: 'deleted_at', nullable: true })
-  deletedAt: Date | null;
+  deletedAt!: Date | null;
 }

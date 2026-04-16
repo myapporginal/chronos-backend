@@ -6,20 +6,20 @@ import { User } from '../users/user.entity';
 @Entity('roles')
 export class Role extends BaseEntity {
   @Column({ name: 'company_id' })
-  companyId: string;
+  companyId!: string;
 
   @Column({ unique: true, length: 255 })
-  name: string;
+  name!: string;
 
   @Column({ type: 'text', nullable: true })
-  description: string | null;
+  description!: string | null;
 
   @Column({ name: 'is_active', default: true })
-  isActive: boolean;
+  isActive!: boolean;
 
   @OneToMany(() => RolePermission, (rolePermission) => rolePermission.role)
-  rolePermissions: RolePermission[];
+  rolePermissions!: RolePermission[];
 
   @OneToMany(() => User, (user) => user.role)
-  users: User[];
+  users!: User[];
 }

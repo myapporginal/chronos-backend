@@ -8,41 +8,41 @@ import { Employee } from '../employees/employee.entity';
 @Entity('work_centers')
 export class WorkCenter extends BaseEntity {
   @Column({ name: 'company_id' })
-  companyId: string;
+  companyId!: string;
 
   @Column({ length: 200 })
-  name: string;
+  name!: string;
 
   @Column({ length: 300, nullable: true })
-  address: string;
+  address!: string;
 
   @Column({ length: 100, nullable: true })
-  city: string;
+  city!: string;
 
   @Column({ length: 100, nullable: true })
-  department: string;
+  department!: string;
 
   @Column({ name: 'employee_count', type: 'int', default: 0 })
-  employeeCount: number;
+  employeeCount!: number;
 
   @Column({ name: 'is_main', default: false })
-  isMain: boolean;
+  isMain!: boolean;
 
   @Column({ default: true, name: 'is_active' })
-  isActive: boolean;
+  isActive!: boolean;
 
   @ManyToOne(() => Company, (company) => company.workCenters, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'company_id' })
-  company: Company;
+  company!: Company;
 
   @OneToMany(() => WorkArea, (workArea) => workArea.workCenter)
-  workAreas: WorkArea[];
+  workAreas!: WorkArea[];
 
   @OneToMany(() => Position, (position) => position.workCenter)
-  positions: Position[];
+  positions!: Position[];
 
   @OneToMany(() => Employee, (employee) => employee.workCenter)
-  employees: Employee[];
+  employees!: Employee[];
 }

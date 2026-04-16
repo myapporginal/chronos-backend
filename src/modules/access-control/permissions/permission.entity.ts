@@ -5,20 +5,20 @@ import { RolePermission } from '../role-permissions/role-permission.entity';
 @Entity('permissions')
 export class Permission extends BaseEntity {
   @Column({ name: 'company_id' })
-  companyId: string;
+  companyId!: string;
 
   @Column({ unique: true, length: 255 })
-  name: string;
+  name!: string;
 
   @Column({ type: 'text', nullable: true })
-  description: string | null;
+  description!: string | null;
 
   @Column({ name: 'is_active', default: true })
-  isActive: boolean;
+  isActive!: boolean;
 
   @OneToMany(
     () => RolePermission,
     (rolePermission) => rolePermission.permission,
   )
-  rolePermissions: RolePermission[];
+  rolePermissions!: RolePermission[];
 }

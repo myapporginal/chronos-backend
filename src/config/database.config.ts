@@ -1,20 +1,27 @@
 import { ConfigService } from '@common/utils/services/config.service';
+import { Injectable } from '@nestjs/common';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { DataSourceOptions } from 'typeorm';
 
 type Options = DataSourceOptions | TypeOrmModuleOptions;
 
+@Injectable()
 export class DatabaseConfigService extends ConfigService {
-  constructor(env: Record<string, string | undefined>) {
-    super(env);
+  constructor() {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    super(process.env as Record<string, string | undefined>);
   }
 
   isProduction(): boolean {
     return this.get<string>('NODE_ENV') === 'production';
   }
 
+  isCli(): boolean {
+    return this.get<string>('NODE_ENV') === 'cli';
+  }
+
   getTypeOrmConfig(): Options {
-    const isProd = this.isProduction();
+    const isCli = this.isCli();
 
     return {
       type: 'postgres',
@@ -24,13 +31,11 @@ export class DatabaseConfigService extends ConfigService {
       password: this.get<string>('DB_PASSWORD'),
       database: this.get<string>('DB_NAME'),
 
-      entities: [isProd ? 'dist/**/*.entity.js' : 'src/**/*.entity.ts'],
+      entities: [isCli ? 'src/**/*.entity.js' : 'dist/**/*.entity.ts'],
 
-      migrations: [isProd ? 'dist/migrations/*.js' : 'migrations/*.ts'],
+      migrations: [isCli ? 'migrations/*.ts' : 'dist/migrations/*.ts'],
 
-      synchronize: !isProd,
-      migrationsRun: !isProd,
-      logging: !isProd,
+      logging: true,
     };
   }
 }

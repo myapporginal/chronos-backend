@@ -1,23 +1,22 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { databaseConfig } from './config/database.config';
+import { CustomConfigModule } from './config/config.module';
+import { DatabaseConfigService } from './config/database.config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-
-      // Load .env file based on NODE_ENV
-      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
-    }),
+    // 1. Importas tu módulo de configuración a nivel de AppModule
+    CustomConfigModule,
 
     TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: databaseConfig,
+      // 2. IMPORTANTE: También debes importar el módulo AQUÍ adentro
+      imports: [CustomConfigModule],
+      inject: [DatabaseConfigService],
+      useFactory: (dbConfig: DatabaseConfigService) => {
+        console.log(dbConfig.getTypeOrmConfig());
+        return dbConfig.getTypeOrmConfig();
+      },
     }),
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
