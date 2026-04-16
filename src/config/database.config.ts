@@ -1,39 +1,36 @@
-import { ConfigService } from "@nestjs/config";
-import { TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { ConfigService } from '@common/utils/services/config.service';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { DataSourceOptions } from 'typeorm';
 
-export const databaseConfig = (
-    configService: ConfigService
-): TypeOrmModuleOptions => {
-    const isProd = configService.get<string>('NODE_ENV') === 'production';
+type Options = DataSourceOptions | TypeOrmModuleOptions;
+
+export class DatabaseConfigService extends ConfigService {
+  constructor(env: Record<string, string | undefined>) {
+    super(env);
+  }
+
+  isProduction(): boolean {
+    return this.get<string>('NODE_ENV') === 'production';
+  }
+
+  getTypeOrmConfig(): Options {
+    const isProd = this.isProduction();
 
     return {
-        type: 'postgres',
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USER'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_NAME'),
-        // Entities
-        entities: [
-            isProd
-                ? 'dist/**/*.entity.{js,ts}'
-                : 'src/**/*.entity.{js,ts}'
-        ],
+      type: 'postgres',
+      host: this.get<string>('DB_HOST'),
+      port: Number(this.get<string>('DB_PORT')),
+      username: this.get<string>('DB_USER'),
+      password: this.get<string>('DB_PASSWORD'),
+      database: this.get<string>('DB_NAME'),
 
-        // Migrations
-        migrations: [
-            isProd
-                ? 'dist/migrations/*.{js,ts}'
-                : 'migrations/*.{js,ts}'
-        ],
-        
-        // Never use synchronize: true in production
-        synchronize: !isProd,
-        
-        // Execute migrations automatically on startup (only in development)
-        migrationsRun: !isProd,
+      entities: [isProd ? 'dist/**/*.entity.js' : 'src/**/*.entity.ts'],
 
-        // Logging
-        logging: !isProd
+      migrations: [isProd ? 'dist/migrations/*.js' : 'migrations/*.ts'],
+
+      synchronize: !isProd,
+      migrationsRun: !isProd,
+      logging: !isProd,
     };
-};
+  }
+}

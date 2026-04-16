@@ -14,8 +14,8 @@ import { databaseConfig } from './config/database.config';
 
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: databaseConfig
-    })
+      useFactory: databaseConfig,
+    }),
   ],
   controllers: [],
   providers: [],
