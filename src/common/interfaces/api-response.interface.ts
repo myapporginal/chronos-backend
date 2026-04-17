@@ -10,11 +10,11 @@ export interface FieldError {
  * Metadata attached to paginated list responses.
  */
 export interface PaginationMetadata {
-  nextUrl: string | null;
-  backUrl: string | null;
-  latestUrl: string | null;
+  next_url: string | null;
+  back_url: string | null;
+  latest_url: string | null;
   page: number;
-  maxPage: number;
+  max_page: number;
 }
 
 /**

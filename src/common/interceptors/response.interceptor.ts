@@ -91,13 +91,13 @@ export class ResponseInterceptor<T> implements NestInterceptor<
     const lastOffset = maxPage > 0 ? (maxPage - 1) * limit : 0;
 
     return {
-      nextUrl:
+      next_url:
         nextOffset < total ? this.buildUrl(request, limit, nextOffset) : null,
-      backUrl:
+      back_url:
         prevOffset >= 0 ? this.buildUrl(request, limit, prevOffset) : null,
-      latestUrl: total > 0 ? this.buildUrl(request, limit, lastOffset) : null,
+      latest_url: total > 0 ? this.buildUrl(request, limit, lastOffset) : null,
       page,
-      maxPage,
+      max_page: maxPage,
     };
   }
 
