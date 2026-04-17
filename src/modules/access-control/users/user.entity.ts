@@ -1,14 +1,11 @@
 import { BaseEntity } from '@common/utils/entities/base.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
-import { Role } from '../roles/role.entity';
-import { Employee } from '@modules/organization-structure/employees/employee.entity';
-import { RiskAssessment } from '@modules/risk-management/risk-assesment/risk-assessment.entity';
-import { ControlMeasure } from '@modules/risk-management/control-measures/control-measure.entity';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Company } from '@modules/organization-structure/companies/companies.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
-  @Column({ name: 'company_id' })
-  companyId!: string;
+  @Column({ name: 'company_id', nullable: true, type: 'uuid' })
+  companyId!: string | null;
 
   @Column({ unique: true, length: 255 })
   email!: string;
@@ -32,24 +29,24 @@ export class User extends BaseEntity {
   lastLoginAt!: string | null;
 
   // Relations
-  // @ManyToOne(() => Company, (company) => company.users, {
-  //   onDelete: 'CASCADE',
-  // })
-  // @JoinColumn({ name: 'company_id' })
-  // company!: Company;
-
-  @ManyToOne(() => Role, (role) => role.users, {
+  @ManyToOne(() => Company, (company) => company.users, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'role_id' })
-  role!: Role;
+  @JoinColumn({ name: 'company_id' })
+  company!: Company;
 
-  @OneToMany(() => Employee, (employee) => employee.user)
-  employees!: Employee[];
+  // @ManyToOne(() => Role, (role) => role.users, {
+  //   onDelete: 'CASCADE',
+  // })
+  // @JoinColumn({ name: 'role_id' })
+  // role!: Role;
 
-  @OneToMany(() => RiskAssessment, (ra) => ra.responsible)
-  riskAssessments!: RiskAssessment[];
+  // @OneToMany(() => Employee, (employee) => employee.user)
+  // employees!: Employee[];
 
-  @OneToMany(() => ControlMeasure, (cm) => cm.responsible)
-  controlMeasures!: ControlMeasure[];
+  // @OneToMany(() => RiskAssessment, (ra) => ra.responsible)
+  // riskAssessments!: RiskAssessment[];
+
+  // @OneToMany(() => ControlMeasure, (cm) => cm.responsible)
+  // controlMeasures!: ControlMeasure[];
 }

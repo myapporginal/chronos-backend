@@ -35,10 +35,10 @@ export class DatabaseConfigService extends ConfigService {
       password: this.getString('DB_PASSWORD'),
       database: this.getString('DB_NAME'),
 
-      autoLoadEntities: true,
+      autoLoadEntities: isCli ? false : true,
 
       // CLI migration runs need to glob the source TS files directly.
-      entities: [isCli ? 'src/**/*.entity.js' : ''],
+      entities: [isCli ? 'src/**/*.entity.ts' : ''],
 
       migrations: [isCli ? 'migrations/*.ts' : 'dist/migrations/*.ts'],
 

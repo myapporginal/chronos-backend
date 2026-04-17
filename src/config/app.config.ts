@@ -24,4 +24,12 @@ export class AppConfigService extends ConfigService {
   isProduction(): boolean {
     return this.nodeEnv() === 'production';
   }
+
+  jwtSecret(): string {
+    return this.getString('JWT_SECRET', 'CHANGEME_SECRET');
+  }
+
+  jwtExpiresIn(): string {
+    return this.getString('JWT_EXPIRES_IN', '60');
+  }
 }

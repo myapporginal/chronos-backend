@@ -1,6 +1,7 @@
 import { BaseEntity } from '@common/utils/entities/base.entity';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { Expose } from 'class-transformer';
+import { User } from '@modules/access-control/users/user.entity';
 
 @Entity('companies')
 export class Company extends BaseEntity {
@@ -41,8 +42,8 @@ export class Company extends BaseEntity {
   // @OneToMany(() => WorkCenter, (workCenter) => workCenter.company)
   // workCenters!: WorkCenter[];
 
-  // @OneToMany(() => User, (user) => user.company)
-  // users!: User[];
+  @OneToMany(() => User, (user) => user.company)
+  users!: User[];
 
   // @OneToMany(() => Hazard, (hazard) => hazard.company)
   // hazards!: Hazard[];

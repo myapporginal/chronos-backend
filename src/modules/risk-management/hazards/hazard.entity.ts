@@ -9,7 +9,7 @@ export class Hazard extends BaseEntity {
   hazardFamilyId!: string;
 
   /** Null means this hazard is a global/catalog entry not tied to a specific company */
-  @Column({ name: 'company_id', nullable: true })
+  @Column({ name: 'company_id', nullable: true, type: 'uuid' })
   companyId!: string | null;
 
   @Column({ length: 255 })

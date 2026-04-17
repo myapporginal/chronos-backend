@@ -2,7 +2,6 @@ import { BaseEntity } from '@common/utils/entities/base.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { ControlHierarchyLevel, ControlStatus } from '../common/utils/enums';
 import { RiskAssessment } from '../risk-assesment/risk-assessment.entity';
-import { User } from '@modules/access-control/users/user.entity';
 
 @Entity('control_measures')
 export class ControlMeasure extends BaseEntity {
@@ -49,7 +48,7 @@ export class ControlMeasure extends BaseEntity {
   @JoinColumn({ name: 'risk_assessment_id' })
   riskAssessment!: RiskAssessment;
 
-  @ManyToOne(() => User, (u) => u.controlMeasures, { onDelete: 'RESTRICT' })
-  @JoinColumn({ name: 'responsible_id' })
-  responsible!: User;
+  // @ManyToOne(() => User, (u) => u.controlMeasures, { onDelete: 'RESTRICT' })
+  // @JoinColumn({ name: 'responsible_id' })
+  // responsible!: User;
 }

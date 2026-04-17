@@ -2,7 +2,6 @@ import { DocumentType } from '@modules/access-control/common/utils/enums';
 import { Column, JoinColumn, ManyToOne, Entity } from 'typeorm';
 import { WorkCenter } from '../work-centers/work-center.entity';
 import { Position } from '../positions/position.entity';
-import { User } from '@modules/access-control/users/user.entity';
 import { BaseEntity } from '@common/utils/entities/base.entity';
 
 @Entity('employees')
@@ -51,10 +50,10 @@ export class Employee extends BaseEntity {
   @JoinColumn({ name: 'position_id' })
   position!: Position;
 
-  @ManyToOne(() => User, (user) => user.employees, {
-    onDelete: 'SET NULL',
-    nullable: true,
-  })
-  @JoinColumn({ name: 'user_id' })
-  user!: User | null;
+  // @ManyToOne(() => User, (user) => user.employees, {
+  //   onDelete: 'SET NULL',
+  //   nullable: true,
+  // })
+  // @JoinColumn({ name: 'user_id' })
+  // user!: User | null;
 }

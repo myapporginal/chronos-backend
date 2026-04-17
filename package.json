@@ -18,11 +18,14 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "ts-node --transpile-only -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "migration:generate": "pnpm run typeorm migration:generate -d ./src/config/data-source.ts migrations/Init",
-    "migration:create": "pnpm run typeorm migration:create -d ./src/config/data-source.ts",
-    "migration:run": "pnpm run typeorm migration:run -d ./src/config/data-source.ts",
-    "migration:revert": "pnpm run typeorm migration:revert -d ./src/config/data-source.ts"
+    "typeorm": "NODE_ENV=cli ts-node --transpile-only -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "migration:generate": "NODE_ENV=cli pnpm run typeorm migration:generate -d ./src/config/data-source.ts migrations/Init",
+    "migration:create": "NODE_ENV=cli pnpm run typeorm migration:create -d ./src/config/data-source.ts",
+    "migration:run": "NODE_ENV=cli pnpm run typeorm migration:run -d ./src/config/data-source.ts",
+    "migration:revert": "NODE_ENV=cli pnpm run typeorm migration:revert -d ./src/config/data-source.ts",
+    "typeorm-extension": "NODE_ENV=cli ts-node --transpile-only -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.mjs",
+    "seed:run": "NODE_ENV=cli pnpm run typeorm-extension seed:run -d ./src/config/data-source.ts",
+    "seed:create": "NODE_ENV=cli pnpm run typeorm-extension seed:create -r ./seeds"
   },
   "dependencies": {
     "@nestjs/common": "11.1.19",
@@ -31,6 +34,7 @@
     "@nestjs/jwt": "11.0.2",
     "@nestjs/platform-express": "11.1.19",
     "@nestjs/typeorm": "11.0.1",
+    "bcrypt": "6.0.0",
     "class-transformer": "0.5.1",
     "class-validator": "0.15.1",
     "dotenv": "17.4.2",
@@ -38,7 +42,8 @@
     "pg": "8.20.0",
     "reflect-metadata": "0.2.2",
     "rxjs": "7.8.2",
-    "typeorm": "0.3.28"
+    "typeorm": "0.3.28",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.3.5",
@@ -47,8 +52,10 @@
     "@nestjs/schematics": "11.1.0",
     "@nestjs/swagger": "11.3.0",
     "@nestjs/testing": "11.1.19",
+    "@types/bcrypt": "6.0.0",
     "@types/express": "5.0.6",
     "@types/jest": "30.0.0",
+    "@types/mocha": "10.0.10",
     "@types/node": "25.6.0",
     "@types/supertest": "6.0.2",
     "eslint": "9.39.4",
@@ -63,6 +70,7 @@
     "ts-loader": "9.5.7",
     "ts-node": "10.9.2",
     "tsconfig-paths": "4.2.0",
+    "typeorm-extension": "3.9.0",
     "typescript": "6.0.2",
     "typescript-eslint": "8.58.2"
   },

@@ -4,6 +4,8 @@ import { CustomConfigModule } from './config/config.module';
 import { DatabaseConfigService } from './config/database.config';
 import { OrganizationStructureModule } from '@modules/organization-structure/organization-structure.module';
 import { IsUniqueConstraint } from '@common/decorators/is-unique.decorator';
+import { AuthModule } from './modules/auth/auth.module';
+import { AccessControlModule } from './modules/access-control/access-control.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { IsUniqueConstraint } from '@common/decorators/is-unique.decorator';
 
     // Feature modules
     OrganizationStructureModule,
+    AuthModule,
+    AccessControlModule,
   ],
   providers: [IsUniqueConstraint],
 })

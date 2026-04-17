@@ -10,7 +10,6 @@ import { WorkCenter } from '@modules/organization-structure/work-centers/work-ce
 import { WorkArea } from '@modules/organization-structure/work-areas/work-area.entity';
 import { Position } from '@modules/organization-structure/positions/position.entity';
 import { Hazard } from '../hazards/hazard.entity';
-import { User } from '@modules/access-control/users/user.entity';
 import { ControlMeasure } from '../control-measures/control-measure.entity';
 
 @Entity('risk_assessments')
@@ -118,9 +117,9 @@ export class RiskAssessment extends BaseEntity {
   @JoinColumn({ name: 'hazard_id' })
   hazard!: Hazard;
 
-  @ManyToOne(() => User, (u) => u.riskAssessments, { onDelete: 'RESTRICT' })
-  @JoinColumn({ name: 'responsible_id' })
-  responsible!: User;
+  // @ManyToOne(() => User, (u) => u.riskAssessments, { onDelete: 'RESTRICT' })
+  // @JoinColumn({ name: 'responsible_id' })
+  // responsible!: User;
 
   @OneToMany(() => ControlMeasure, (cm) => cm.riskAssessment)
   controlMeasures!: ControlMeasure[];
