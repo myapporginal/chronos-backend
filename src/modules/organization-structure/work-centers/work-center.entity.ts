@@ -31,11 +31,11 @@ export class WorkCenter extends BaseEntity {
   @Column({ default: true, name: 'is_active' })
   isActive!: boolean;
 
-  @ManyToOne(() => Company, (company) => company.workCenters, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: 'company_id' })
-  company!: Company;
+  // @ManyToOne(() => Company, (company) => company.workCenters, {
+  //   onDelete: 'CASCADE',
+  // })
+  // @JoinColumn({ name: 'company_id' })
+  // company!: Company;
 
   @OneToMany(() => WorkArea, (workArea) => workArea.workCenter)
   workAreas!: WorkArea[];

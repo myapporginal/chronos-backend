@@ -1,7 +1,6 @@
 import { BaseEntity } from '@common/utils/entities/base.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Role } from '../roles/role.entity';
-import { Company } from '@modules/organization-structure/companies/companies.entity';
 import { Employee } from '@modules/organization-structure/employees/employee.entity';
 import { RiskAssessment } from '@modules/risk-management/risk-assesment/risk-assessment.entity';
 import { ControlMeasure } from '@modules/risk-management/control-measures/control-measure.entity';
@@ -33,11 +32,11 @@ export class User extends BaseEntity {
   lastLoginAt!: string | null;
 
   // Relations
-  @ManyToOne(() => Company, (company) => company.users, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: 'company_id' })
-  company!: Company;
+  // @ManyToOne(() => Company, (company) => company.users, {
+  //   onDelete: 'CASCADE',
+  // })
+  // @JoinColumn({ name: 'company_id' })
+  // company!: Company;
 
   @ManyToOne(() => Role, (role) => role.users, {
     onDelete: 'CASCADE',

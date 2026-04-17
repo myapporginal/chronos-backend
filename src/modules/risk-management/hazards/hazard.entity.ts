@@ -29,12 +29,12 @@ export class Hazard extends BaseEntity {
   @JoinColumn({ name: 'hazard_family_id' })
   hazardFamily!: HazardFamily;
 
-  @ManyToOne(() => Company, (company) => company.hazards, {
-    onDelete: 'CASCADE',
-    nullable: true,
-  })
-  @JoinColumn({ name: 'company_id' })
-  company!: Company | null;
+  // @ManyToOne(() => Company, (company) => company.hazards, {
+  //   onDelete: 'CASCADE',
+  //   nullable: true,
+  // })
+  // @JoinColumn({ name: 'company_id' })
+  // company!: Company | null;
 
   @OneToMany(() => RiskAssessment, (ra) => ra.hazard)
   riskAssessments!: RiskAssessment[];

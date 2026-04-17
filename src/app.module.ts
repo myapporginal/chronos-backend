@@ -1,15 +1,15 @@
-import { Module } from '@nestjs/common';
+import * as common from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomConfigModule } from './config/config.module';
 import { DatabaseConfigService } from './config/database.config';
+import { OrganizationStructureModule } from '@modules/organization-structure/organization-structure.module';
+import { IsUniqueConstraint } from '@common/decorators/is-unique.decorator';
 
-@Module({
+@common.Module({
   imports: [
-    // 1. Importas tu módulo de configuración a nivel de AppModule
     CustomConfigModule,
 
     TypeOrmModule.forRootAsync({
-      // 2. IMPORTANTE: También debes importar el módulo AQUÍ adentro
       imports: [CustomConfigModule],
       inject: [DatabaseConfigService],
       useFactory: (dbConfig: DatabaseConfigService) => {
@@ -17,6 +17,10 @@ import { DatabaseConfigService } from './config/database.config';
         return dbConfig.getTypeOrmConfig();
       },
     }),
+
+    // Modules
+    OrganizationStructureModule,
   ],
+  providers: [IsUniqueConstraint],
 })
 export class AppModule {}

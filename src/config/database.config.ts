@@ -31,7 +31,9 @@ export class DatabaseConfigService extends ConfigService {
       password: this.get<string>('DB_PASSWORD'),
       database: this.get<string>('DB_NAME'),
 
-      entities: [isCli ? 'src/**/*.entity.js' : 'dist/**/*.entity.ts'],
+      autoLoadEntities: true,
+
+      entities: [isCli ? 'src/**/*.entity.js' : ''],
 
       migrations: [isCli ? 'migrations/*.ts' : 'dist/migrations/*.ts'],
 

@@ -1,14 +1,46 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { VersioningType } from '@nestjs/common';
+import { ClassSerializerInterceptor, VersioningType } from '@nestjs/common';
+import { ExceptionHandlerFilter } from '@common/filters/exception-handler.filter';
+import { useContainer } from 'class-validator';
+import { ValidationPipe } from '@common/pipes/validation.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
+  /**
+   * Set global prefix
+   */
+  app.setGlobalPrefix('api');
+
+  /**
+   * Enable versioning
+   */
   app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: '1',
   });
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+
+  /**
+   * Set global interceptors
+   */
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
+  /**
+   * Set global pipes
+   */
+  app.useGlobalPipes(new ValidationPipe());
+
+  /**
+   * Set global filters
+   */
+  app.useGlobalFilters(new ExceptionHandlerFilter());
+
+  /**
+   * Start server
+   */
   await app.listen(process.env.PORT ?? 3000);
 }
 void bootstrap();
