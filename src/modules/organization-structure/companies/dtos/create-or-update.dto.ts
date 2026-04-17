@@ -1,6 +1,7 @@
 import { Expose } from 'class-transformer';
 import {
   IsBoolean,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
@@ -11,13 +12,16 @@ import { IsUnique } from '@common/decorators/is-unique.decorator';
 import { Company } from '../companies.entity';
 
 export class CreateOrUpdateCompanyDto {
+  @IsNotEmpty()
   @IsString()
   @IsUnique({ entity: Company })
   nit!: string;
 
+  @IsNotEmpty()
   @IsString()
   name!: string;
 
+  @IsNotEmpty()
   @IsString()
   @Expose({ name: 'economic_activity' })
   economicActivity!: string;

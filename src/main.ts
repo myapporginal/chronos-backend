@@ -4,6 +4,7 @@ import { ClassSerializerInterceptor, VersioningType } from '@nestjs/common';
 import { ExceptionHandlerFilter } from '@common/filters/exception-handler.filter';
 import { useContainer } from 'class-validator';
 import { ValidationPipe } from '@common/pipes/validation.pipe';
+import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -32,6 +33,11 @@ async function bootstrap() {
    * Set global pipes
    */
   app.useGlobalPipes(new ValidationPipe());
+
+  /**
+   * Set global interceptors
+   */
+  app.useGlobalInterceptors(new ResponseInterceptor());
 
   /**
    * Set global filters

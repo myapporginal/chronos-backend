@@ -16,9 +16,14 @@ export class CompaniesController {
   async save(
     @Param() params: ParamsIdDto,
     @Body() createOrUpdateCompanyDto: CreateOrUpdateCompanyDto,
-  ): Promise<Company> {
-    const company = plainToInstance(Company, createOrUpdateCompanyDto);
+  ) {
+    const company = plainToInstance(Company, createOrUpdateCompanyDto, {
+      ignoreDecorators: true,
+    });
     company.id = params.id;
-    return this.companiesService.save(company);
+    return {
+      detail: 'Compañia creada correctamente',
+      data: await this.companiesService.save(company),
+    };
   }
 }
