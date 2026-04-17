@@ -5,48 +5,34 @@ import { ExceptionHandlerFilter } from '@common/filters/exception-handler.filter
 import { useContainer } from 'class-validator';
 import { ValidationPipe } from '@common/pipes/validation.pipe';
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
+import { AppConfigService } from './config/app.config';
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
+  const config = app.get(AppConfigService);
 
+  // Allow class-validator to resolve NestJS providers (e.g. IsUniqueConstraint)
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
-  /**
-   * Set global prefix
-   */
   app.setGlobalPrefix('api');
 
-  /**
-   * Enable versioning
-   */
   app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: '1',
   });
 
-  /**
-   * Set global interceptors
-   */
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  app.enableCors({ origin: config.corsOrigin() });
 
-  /**
-   * Set global pipes
-   */
+  app.useGlobalInterceptors(
+    new ClassSerializerInterceptor(app.get(Reflector)),
+    new ResponseInterceptor(),
+  );
+
   app.useGlobalPipes(new ValidationPipe());
 
-  /**
-   * Set global interceptors
-   */
-  app.useGlobalInterceptors(new ResponseInterceptor());
-
-  /**
-   * Set global filters
-   */
   app.useGlobalFilters(new ExceptionHandlerFilter());
 
-  /**
-   * Start server
-   */
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(config.port());
 }
+
 void bootstrap();

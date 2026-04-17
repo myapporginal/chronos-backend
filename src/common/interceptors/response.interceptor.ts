@@ -1,4 +1,3 @@
-// src/common/interceptors/response.interceptor.ts
 import {
   Injectable,
   NestInterceptor,
@@ -6,7 +5,12 @@ import {
   CallHandler,
 } from '@nestjs/common';
 import { Observable, map } from 'rxjs';
-import { ApiResponse } from '../interfaces/api-response.interface';
+import { Request, Response } from 'express';
+import {
+  ApiResponse,
+  PaginationMetadata,
+  ServicePayload,
+} from '../interfaces/api-response.interface';
 
 @Injectable()
 export class ResponseInterceptor<T> implements NestInterceptor<
@@ -15,33 +19,106 @@ export class ResponseInterceptor<T> implements NestInterceptor<
 > {
   intercept(
     context: ExecutionContext,
-    next: CallHandler,
+    next: CallHandler<ServicePayload<T> | T>,
   ): Observable<ApiResponse<T>> {
     const ctx = context.switchToHttp();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const response = ctx.getResponse();
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
 
     return next.handle().pipe(
       map((payload) => {
-        // The controller can return { detail, data } or only the data
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
-        const detail = payload?.detail ?? 'Operación exitosa';
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-        const data = payload?.data !== undefined ? payload.data : payload;
+        const typedPayload = payload as ServicePayload<T>;
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        const detail = typedPayload?.detail ?? 'Operación completada con éxito';
+        const data =
+          typedPayload?.data !== undefined ? typedPayload.data : (payload as T);
+
+        const metadata = this.resolveMetadata(typedPayload, request);
         const statusCode = response.statusCode ?? 200;
 
         return {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           status: statusCode,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           detail,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           data,
+          metadata,
           errors: null,
         };
       }),
     );
+  }
+
+  // ── Private helpers ───────────────────────────────────────────────────────
+
+  /**
+   * Returns pagination metadata when the payload contains `total`, `limit`
+   * and `offset`. Returns `null` for non-paginated responses.
+   */
+  private resolveMetadata(
+    payload: ServicePayload<T>,
+    request: Request,
+  ): PaginationMetadata | null {
+    if (payload?.metadata !== undefined) {
+      return payload.metadata ?? null;
+    }
+
+    const { limit, offset, total } = payload ?? {};
+
+    if (
+      typeof limit !== 'number' ||
+      typeof offset !== 'number' ||
+      typeof total !== 'number'
+    ) {
+      return null;
+    }
+
+    return this.buildPaginationMetadata(limit, offset, total, request);
+  }
+
+  /**
+   * Computes page numbers and prev/next/last URLs from raw pagination values.
+   */
+  private buildPaginationMetadata(
+    limit: number,
+    offset: number,
+    total: number,
+    request: Request,
+  ): PaginationMetadata {
+    const page = Math.floor(offset / limit) + 1;
+    const maxPage = Math.ceil(total / limit);
+
+    const nextOffset = offset + limit;
+    const prevOffset = offset - limit;
+    const lastOffset = maxPage > 0 ? (maxPage - 1) * limit : 0;
+
+    return {
+      nextUrl:
+        nextOffset < total ? this.buildUrl(request, limit, nextOffset) : null,
+      backUrl:
+        prevOffset >= 0 ? this.buildUrl(request, limit, prevOffset) : null,
+      latestUrl: total > 0 ? this.buildUrl(request, limit, lastOffset) : null,
+      page,
+      maxPage,
+    };
+  }
+
+  /**
+   * Builds an absolute URL preserving all current query params except
+   * `offset` and `limit`, which are replaced with the provided values.
+   */
+  private buildUrl(request: Request, limit: number, offset: number): string {
+    const host = request.get('host') ?? '';
+    const base = `${request.protocol}://${host}${request.baseUrl || ''}${request.path}`;
+    const url = new URL(base);
+
+    for (const [key, value] of Object.entries(request.query)) {
+      if (key !== 'offset' && key !== 'limit') {
+        url.searchParams.append(key, value as string);
+      }
+    }
+
+    url.searchParams.append('limit', limit.toString());
+    url.searchParams.append('offset', offset.toString());
+
+    return url.toString();
   }
 }

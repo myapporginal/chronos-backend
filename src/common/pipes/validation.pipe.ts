@@ -7,6 +7,19 @@ import {
 import { ValidationError } from 'class-validator';
 import { defaultMetadataStorage } from 'class-transformer/cjs/storage';
 
+/** Minimal type describing a single @Expose() metadata entry from class-transformer. */
+interface ExposedPropertyMetadata {
+  propertyName: string;
+  options?: { name?: string };
+}
+
+/** Minimal interface for the subset of MetadataStorage we rely on. */
+interface ExposableMetadataStorage {
+  getExposedMetadatas: (
+    target: new (...args: unknown[]) => unknown,
+  ) => ExposedPropertyMetadata[];
+}
+
 @Injectable()
 export class ValidationPipe extends NestValidationPipe {
   constructor() {
@@ -22,7 +35,8 @@ export class ValidationPipe extends NestValidationPipe {
 
           return messages.map((message) => ({
             field: fieldName,
-            message: message.replace(err.property, fieldName), // replace the property name with the exposed name
+            // Replace internal property name with the API-facing exposed name
+            message: message.replace(err.property, fieldName),
           }));
         });
 
@@ -32,19 +46,20 @@ export class ValidationPipe extends NestValidationPipe {
   }
 }
 
+/**
+ * Resolves the API-facing field name declared via @Expose({ name: '...' }).
+ * Falls back to the TypeScript property name when no @Expose() is present.
+ */
 function resolveExposedName(err: ValidationError): string {
-  const targetClass = err.target?.constructor;
+  const targetConstructor = err.target?.constructor as
+    | (new (...args: unknown[]) => unknown)
+    | undefined;
 
-  if (!targetClass) return err.property;
+  if (!targetConstructor) return err.property;
 
-  // TODO: Fix this
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-  const exposedProps = defaultMetadataStorage.getExposedMetadatas(targetClass);
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-  const match = exposedProps.find(
-    (m: { propertyName: string }) => m.propertyName === err.property,
-  );
+  const storage = defaultMetadataStorage as unknown as ExposableMetadataStorage;
+  const exposedProps = storage.getExposedMetadatas(targetConstructor);
+  const match = exposedProps.find((m) => m.propertyName === err.property);
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
   return match?.options?.name ?? err.property;
 }

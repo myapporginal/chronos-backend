@@ -1,6 +1,6 @@
-import { NotFoundException } from '@nestjs/common';
 import {
   Brackets,
+  FindOneOptions,
   ObjectLiteral,
   Repository,
   SelectQueryBuilder,
@@ -8,11 +8,18 @@ import {
 import { FilterDto, FilterOperator } from '@common/dtos/filter.dto';
 import { PaginationQueryDto } from '@common/dtos/pagination-query.dto';
 import { PaginatedResponse } from '@common/dtos/paginated-response.dto';
+import { NotFoundException } from '@common/exceptions/not-found.exception';
 
 export interface FindAllOptions {
   relations?: string[];
 }
 
+/**
+ * Generic base service that provides standard CRUD operations.
+ * Extend this class and inject the TypeORM repository for your entity.
+ *
+ * @typeParam T - Entity type managed by this service.
+ */
 export abstract class BaseCrudService<T extends ObjectLiteral> {
   protected readonly entityName: string;
 
@@ -24,58 +31,58 @@ export abstract class BaseCrudService<T extends ObjectLiteral> {
     query: PaginationQueryDto & { parsedFilters?: FilterDto[] },
     options?: FindAllOptions,
   ): Promise<PaginatedResponse<T>> {
-    const { page = 1, limit = 10, parsedFilters = [] } = query;
-    const skip = (page - 1) * limit;
+    const { offset, limit, parsedFilters = [] } = query;
 
     const alias = this.entityName.toLowerCase();
     const qb = this.repository.createQueryBuilder(alias);
 
-    // Load relations if specified
+    // Load requested relations via LEFT JOIN
     if (options?.relations) {
       for (const relation of options.relations) {
         qb.leftJoinAndSelect(`${alias}.${relation}`, relation);
       }
     }
 
-    // Apply dynamic filters
     this.applyFilters(qb, alias, parsedFilters);
 
-    // Apply pagination
-    qb.skip(skip).take(limit);
+    const isPaginated = limit !== undefined && offset !== undefined;
 
-    // Default ordering by createdAt descending
+    if (isPaginated) {
+      qb.skip(offset).take(limit);
+    }
+
+    // Default sort: newest first
     qb.orderBy(`${alias}.createdAt`, 'DESC');
 
     const [data, totalItems] = await qb.getManyAndCount();
 
+    if (!isPaginated) {
+      return { data, metadata: null };
+    }
+
     return {
       data,
-      meta: {
-        page,
-        limit,
-        totalItems,
-        totalPages: Math.ceil(totalItems / limit),
-      },
+      total: totalItems,
+      limit,
+      offset,
     };
   }
 
   async findById(id: string, relations?: string[]): Promise<T> {
-    const findOptions: Record<string, unknown> = {
-      where: { id } as unknown,
+    const findOptions: FindOneOptions<T> = {
+      where: { id } as unknown as FindOneOptions<T>['where'],
+      ...(relations?.length ? { relations } : {}),
     };
 
-    if (relations?.length) {
-      findOptions['relations'] = relations;
-    }
-
-    const entity = await this.repository.findOne(
-      findOptions as Parameters<Repository<T>['findOne']>[0],
-    );
+    const entity = await this.repository.findOne(findOptions);
 
     if (!entity) {
-      throw new NotFoundException(
-        `${this.entityName} with id "${id}" not found`,
-      );
+      throw new NotFoundException([
+        {
+          field: 'id',
+          message: `${this.entityName} con id "${id}" no fue encontrado.`,
+        },
+      ]);
     }
 
     return entity;
@@ -90,8 +97,12 @@ export abstract class BaseCrudService<T extends ObjectLiteral> {
     await this.repository.softRemove(entity);
   }
 
-  // ─── Private Helpers ───────────────────────────────────────────────
+  // ── Private helpers ───────────────────────────────────────────────────────
 
+  /**
+   * Applies all provided filter conditions to the query builder using AND logic.
+   * Each filter maps to a typed SQL condition based on its operator.
+   */
   private applyFilters(
     qb: SelectQueryBuilder<T>,
     alias: string,
@@ -100,57 +111,56 @@ export abstract class BaseCrudService<T extends ObjectLiteral> {
     if (!filters.length) return;
 
     qb.andWhere(
-      new Brackets((outerQb) => {
+      new Brackets((bracketQb) => {
         filters.forEach((filter, index) => {
           const paramName = `filter_${index}`;
           const column = `${alias}.${filter.field}`;
 
           switch (filter.operator) {
             case FilterOperator.EQUALS:
-              outerQb.andWhere(`${column} = :${paramName}`, {
+              bracketQb.andWhere(`${column} = :${paramName}`, {
                 [paramName]: filter.value,
               });
               break;
 
             case FilterOperator.NOT_EQUALS:
-              outerQb.andWhere(`${column} != :${paramName}`, {
+              bracketQb.andWhere(`${column} != :${paramName}`, {
                 [paramName]: filter.value,
               });
               break;
 
             case FilterOperator.GREATER_THAN:
-              outerQb.andWhere(`${column} > :${paramName}`, {
+              bracketQb.andWhere(`${column} > :${paramName}`, {
                 [paramName]: filter.value,
               });
               break;
 
             case FilterOperator.LESS_THAN:
-              outerQb.andWhere(`${column} < :${paramName}`, {
+              bracketQb.andWhere(`${column} < :${paramName}`, {
                 [paramName]: filter.value,
               });
               break;
 
             case FilterOperator.GREATER_THAN_OR_EQUAL:
-              outerQb.andWhere(`${column} >= :${paramName}`, {
+              bracketQb.andWhere(`${column} >= :${paramName}`, {
                 [paramName]: filter.value,
               });
               break;
 
             case FilterOperator.LESS_THAN_OR_EQUAL:
-              outerQb.andWhere(`${column} <= :${paramName}`, {
+              bracketQb.andWhere(`${column} <= :${paramName}`, {
                 [paramName]: filter.value,
               });
               break;
 
             case FilterOperator.LIKE:
-              outerQb.andWhere(`${column} ILIKE :${paramName}`, {
-                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                [paramName]: `%${filter.value}%`,
+              bracketQb.andWhere(`${column} ILIKE :${paramName}`, {
+                [paramName]: `%${String(filter.value)}%`,
               });
               break;
 
             case FilterOperator.IN:
-              outerQb.andWhere(`${column} IN (:...${paramName})`, {
+              bracketQb.andWhere(`${column} IN (:...${paramName})`, {
                 [paramName]: Array.isArray(filter.value)
                   ? filter.value
                   : [filter.value],
@@ -158,11 +168,11 @@ export abstract class BaseCrudService<T extends ObjectLiteral> {
               break;
 
             case FilterOperator.IS_NULL:
-              outerQb.andWhere(`${column} IS NULL`);
+              bracketQb.andWhere(`${column} IS NULL`);
               break;
 
             case FilterOperator.IS_NOT_NULL:
-              outerQb.andWhere(`${column} IS NOT NULL`);
+              bracketQb.andWhere(`${column} IS NOT NULL`);
               break;
           }
         });

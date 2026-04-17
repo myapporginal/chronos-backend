@@ -6,36 +6,44 @@ import {
   Logger,
 } from '@nestjs/common';
 import { AppException } from '@common/exceptions/app.exception';
+import { FieldError } from '@common/interfaces/api-response.interface';
 import { Response } from 'express';
 
 @Catch()
 export class ExceptionHandlerFilter implements ExceptionFilter {
   private readonly logger = new Logger(ExceptionHandlerFilter.name);
 
-  catch(exception: Error, host: ArgumentsHost): void {
-    const status =
-      (exception as AppException).status || HttpStatus.INTERNAL_SERVER_ERROR;
-    const detail = exception.message || 'Internal Server Error';
-    const errors = (exception as AppException).errors ?? [];
+  catch(exception: unknown, host: ArgumentsHost): void {
+    const isAppException = exception instanceof AppException;
+
+    const status = isAppException
+      ? exception.status
+      : HttpStatus.INTERNAL_SERVER_ERROR;
+
+    const detail = isAppException
+      ? exception.message
+      : 'Ocurrió un error inesperado. Por favor, inténtalo más tarde.';
+
+    const errors: FieldError[] = isAppException ? exception.errors : [];
 
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    // We only log the stack trace in development mode and internal server error
+    // Log stack trace only in development for internal server errors
     if (
-      process.env.NODE_ENV === 'dev' &&
-      status === HttpStatus.INTERNAL_SERVER_ERROR.valueOf()
+      process.env['NODE_ENV'] === 'development' &&
+      status.toString() === HttpStatus.INTERNAL_SERVER_ERROR.toString()
     ) {
-      this.logger.error(
-        'Exception caught',
-        exception instanceof Error ? exception.stack : '',
-      );
+      const stack =
+        exception instanceof Error ? exception.stack : String(exception);
+      this.logger.error('Unhandled exception caught by global filter', stack);
     }
 
     response.status(status).json({
       status,
       detail,
       data: null,
+      metadata: null,
       errors,
     });
   }

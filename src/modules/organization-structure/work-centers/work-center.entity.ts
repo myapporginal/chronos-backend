@@ -1,6 +1,5 @@
 import { BaseEntity } from '@common/utils/entities/base.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
-import { Company } from '../companies/companies.entity';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { WorkArea } from '../work-areas/work-area.entity';
 import { Position } from '../positions/position.entity';
 import { Employee } from '../employees/employee.entity';
@@ -30,12 +29,6 @@ export class WorkCenter extends BaseEntity {
 
   @Column({ default: true, name: 'is_active' })
   isActive!: boolean;
-
-  // @ManyToOne(() => Company, (company) => company.workCenters, {
-  //   onDelete: 'CASCADE',
-  // })
-  // @JoinColumn({ name: 'company_id' })
-  // company!: Company;
 
   @OneToMany(() => WorkArea, (workArea) => workArea.workCenter)
   workAreas!: WorkArea[];

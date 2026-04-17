@@ -6,7 +6,7 @@ import { RiskAssessment } from '@modules/risk-management/risk-assesment/risk-ass
 
 @Entity('positions')
 export class Position extends BaseEntity {
-  @Column({ name: 'work_center_id ' })
+  @Column({ name: 'work_center_id' })
   workCenterId!: string;
 
   @Column({ length: 200 })

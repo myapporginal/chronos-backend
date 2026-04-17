@@ -1,17 +1,17 @@
+import { HttpStatus } from '@nestjs/common';
+import { FieldError } from '../interfaces/api-response.interface';
 import { AppException } from './app.exception';
 
 /**
- * Exception thrown when validation fails.
- * Extends the AppException class with a 422 HTTP status code.
- *
- * @example
- * throw new ValidationException("Validation failed", [{ field: "email", error: "Invalid format" }]);
+ * Thrown when incoming data fails validation rules.
+ * Maps to HTTP 422.
  */
 export class ValidationException extends AppException {
-  constructor(errors?: unknown[]) {
-    super('La validación de datos no fue exitosa', 422);
-    if (errors) {
-      this.setErrors(errors);
-    }
+  constructor(errors?: FieldError[]) {
+    super(
+      'Los datos enviados contienen errores. Por favor, revísalos e inténtalo de nuevo.',
+      HttpStatus.UNPROCESSABLE_ENTITY,
+      errors,
+    );
   }
 }

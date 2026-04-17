@@ -3,41 +3,46 @@ import { Injectable } from '@nestjs/common';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { DataSourceOptions } from 'typeorm';
 
-type Options = DataSourceOptions | TypeOrmModuleOptions;
+type TypeOrmConfig = DataSourceOptions & TypeOrmModuleOptions;
 
+/**
+ * Database configuration service.
+ * Uses required getters to fail fast when critical DB env vars are missing.
+ */
 @Injectable()
 export class DatabaseConfigService extends ConfigService {
   constructor() {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     super(process.env as Record<string, string | undefined>);
   }
 
   isProduction(): boolean {
-    return this.get<string>('NODE_ENV') === 'production';
+    return this.getString('NODE_ENV', 'development') === 'production';
   }
 
+  /** True when TypeORM CLI is running outside of NestJS (e.g. migrations). */
   isCli(): boolean {
-    return this.get<string>('NODE_ENV') === 'cli';
+    return this.getString('NODE_ENV', 'development') === 'cli';
   }
 
-  getTypeOrmConfig(): Options {
+  getTypeOrmConfig(): TypeOrmConfig {
     const isCli = this.isCli();
 
     return {
       type: 'postgres',
-      host: this.get<string>('DB_HOST'),
-      port: Number(this.get<string>('DB_PORT')),
-      username: this.get<string>('DB_USER'),
-      password: this.get<string>('DB_PASSWORD'),
-      database: this.get<string>('DB_NAME'),
+      host: this.getString('DB_HOST', '127.0.0.1'),
+      port: this.getNumber('DB_PORT', 5432),
+      username: this.getString('DB_USER'),
+      password: this.getString('DB_PASSWORD'),
+      database: this.getString('DB_NAME'),
 
       autoLoadEntities: true,
 
+      // CLI migration runs need to glob the source TS files directly.
       entities: [isCli ? 'src/**/*.entity.js' : ''],
 
       migrations: [isCli ? 'migrations/*.ts' : 'dist/migrations/*.ts'],
 
-      logging: true,
+      logging: !this.isProduction(),
     };
   }
 }
