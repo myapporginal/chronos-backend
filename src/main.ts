@@ -6,6 +6,8 @@ import { useContainer } from 'class-validator';
 import { ValidationPipe } from '@common/pipes/validation.pipe';
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { AppConfigService } from './config/app.config';
+import { TenantPermissionsGuard } from '@common/guards/tenant-permissions.guard';
+import { JwtService } from '@nestjs/jwt';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
@@ -22,6 +24,10 @@ async function bootstrap(): Promise<void> {
   });
 
   app.enableCors({ origin: config.corsOrigin() });
+
+  app.useGlobalGuards(
+    new TenantPermissionsGuard(app.get(Reflector), app.get(JwtService)),
+  );
 
   app.useGlobalInterceptors(
     new ClassSerializerInterceptor(app.get(Reflector)),

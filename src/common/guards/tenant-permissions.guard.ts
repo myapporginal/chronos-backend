@@ -3,13 +3,12 @@ import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { PERMISSIONS_KEY } from '../decorators/require-permissions.decorator';
-import { User } from '@modules/access-control/users/user.entity';
 import { UnauthorizedException } from '@common/exceptions/unauthorized.exception';
 import { ForbiddenException } from '@common/exceptions/forbidden.exception';
 
 // Extends the User interface to include the companyId and role
 export interface RequestWithUser extends Request {
-  user: User & { companyId: string; scopes: string[] };
+  user: { sub: string; tenant_id: string; scopes: string[] };
   tenantId: string | null;
 }
 
@@ -33,25 +32,29 @@ export class TenantPermissionsGuard implements CanActivate {
     if (!user) {
       const token = this.extractTokenFromHeader(request);
       if (!token) {
-        throw new UnauthorizedException();
+        throw new UnauthorizedException(
+          'Token de autenticación no ha sido encontrado, por favor inicie sesión.',
+        );
       }
 
       try {
         user = await this.jwtService.verifyAsync(token);
-        request['user'] = user; // Attach user to request
+        request.user = user; // Attach user to request
       } catch {
-        throw new UnauthorizedException();
+        throw new UnauthorizedException(
+          'Token de autenticación inválido, por favor inicie sesión.',
+        );
       }
     }
 
     // 2. Multitenancy validation
-    const companyId = user.companyId;
-    if (!companyId) {
+    const tenantId = user.tenant_id;
+    if (!tenantId) {
       throw new ForbiddenException();
     }
 
     // Inject tenant context into request for downstream use
-    request['tenantId'] = companyId;
+    request.tenantId = tenantId;
 
     // 3. Scope / Permission validation
     if (!requiredPermissions || requiredPermissions.length === 0) {

@@ -8,6 +8,7 @@ import { FilterDto, PaginationQueryDto } from '@common/dtos';
 import { ParseFilterPipe } from '@common/pipes/parse-filter.pipe';
 import { PaginatedResponse } from '@common/dtos/paginated-response.dto';
 import { ServicePayload } from '@common/interfaces/api-response.interface';
+import { RequirePermissions } from '@common/decorators/require-permissions.decorator';
 
 @Controller({
   path: 'companies',
@@ -17,6 +18,7 @@ export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}
 
   @Get()
+  @RequirePermissions('show:companies')
   async findAll(
     @Query() query: PaginationQueryDto,
     @Query('filters', ParseFilterPipe) parsedFilters: FilterDto[],
@@ -28,6 +30,7 @@ export class CompaniesController {
   }
 
   @Put(':id')
+  @RequirePermissions('save:companies')
   async save(
     @Param() params: ParamsIdDto,
     @Body() dto: CreateOrUpdateCompanyDto,
