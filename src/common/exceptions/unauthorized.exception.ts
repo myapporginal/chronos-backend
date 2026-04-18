@@ -6,9 +6,10 @@ import { HttpStatus } from '@nestjs/common';
  * Maps to HTTP 401.
  */
 export class UnauthorizedException extends AppException {
-  constructor() {
+  constructor(message?: string) {
     super(
-      'Parece que tus datos de inicio de sesión no son correctos. Inténtalo de nuevo o restablece tu contraseña.',
+      message ??
+        'Parece que tus datos de inicio de sesión no son correctos. Inténtalo de nuevo o restablece tu contraseña.',
       HttpStatus.UNAUTHORIZED,
     );
   }

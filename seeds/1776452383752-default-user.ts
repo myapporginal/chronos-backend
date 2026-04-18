@@ -13,7 +13,7 @@ export class DefaultUser1776452383752 implements Seeder {
     defaultUser.password = await bcrypt.hash('123456789', 10);
     defaultUser.firstName = 'Default';
     defaultUser.lastName = 'User';
-    defaultUser.roleId = '4ed0b348-f6f5-433f-8ef9-63dd3b818958';
+    defaultUser.roleId = '0b09d0db-faac-4e6b-96f1-bcf702b136dc';
     defaultUser.isActive = true;
     defaultUser.lastLoginAt = new Date().toISOString();
 

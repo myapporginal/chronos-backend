@@ -4,8 +4,8 @@ import { RolePermission } from '../role-permissions/role-permission.entity';
 
 @Entity('permissions')
 export class Permission extends BaseEntity {
-  @Column({ name: 'company_id' })
-  companyId!: string;
+  @Column({ name: 'company_id', nullable: true, type: 'uuid' })
+  companyId!: string | null;
 
   @Column({ unique: true, length: 255 })
   name!: string;

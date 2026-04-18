@@ -11,6 +11,13 @@ export class UsersService extends BaseCrudService<User> {
   }
 
   async findOneByEmail(email: string): Promise<User | null> {
-    return this.repository.findOneBy({ email });
+    return this.repository.findOne({
+      where: { email },
+      relations: [
+        'role',
+        'role.rolePermissions',
+        'role.rolePermissions.permission',
+      ],
+    });
   }
 }

@@ -1,6 +1,7 @@
 import { BaseEntity } from '@common/utils/entities/base.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Company } from '@modules/organization-structure/companies/companies.entity';
+import { Role } from '../roles/role.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -35,11 +36,11 @@ export class User extends BaseEntity {
   @JoinColumn({ name: 'company_id' })
   company!: Company;
 
-  // @ManyToOne(() => Role, (role) => role.users, {
-  //   onDelete: 'CASCADE',
-  // })
-  // @JoinColumn({ name: 'role_id' })
-  // role!: Role;
+  @ManyToOne(() => Role, (role) => role.users, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'role_id' })
+  role!: Role;
 
   // @OneToMany(() => Employee, (employee) => employee.user)
   // employees!: Employee[];
