@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomConfigModule } from './config/config.module';
 import { DatabaseConfigService } from './config/database.config';
@@ -6,6 +6,8 @@ import { OrganizationStructureModule } from '@modules/organization-structure/org
 import { IsUniqueConstraint } from '@common/decorators/is-unique.decorator';
 import { AuthModule } from './modules/auth/auth.module';
 import { AccessControlModule } from './modules/access-control/access-control.module';
+import { RequestContextService } from '@common/utils/services/request-context.service';
+import { RequestContextMiddleware } from '@common/middlewares/request-context.middleware';
 
 @Module({
   imports: [
@@ -23,6 +25,10 @@ import { AccessControlModule } from './modules/access-control/access-control.mod
     AuthModule,
     AccessControlModule,
   ],
-  providers: [IsUniqueConstraint],
+  providers: [IsUniqueConstraint, RequestContextService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestContextMiddleware).forRoutes('*');
+  }
+}

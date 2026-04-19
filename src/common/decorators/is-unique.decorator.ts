@@ -6,7 +6,8 @@ import {
   ValidationArguments,
 } from 'class-validator';
 import { Injectable } from '@nestjs/common';
-import { DataSource, ObjectLiteral } from 'typeorm';
+import { DataSource, Not, ObjectLiteral } from 'typeorm';
+import { RequestContextService } from '@common/utils/services/request-context.service';
 
 export type IsUniqueOptions = {
   /** The entity class to query. */
@@ -18,17 +19,28 @@ export type IsUniqueOptions = {
 @Injectable()
 @ValidatorConstraint({ name: 'IsUnique', async: true })
 export class IsUniqueConstraint implements ValidatorConstraintInterface {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(
+    private readonly dataSource: DataSource,
+    private readonly requestContext: RequestContextService,
+  ) {}
 
   async validate(value: unknown, args: ValidationArguments): Promise<boolean> {
     const { entity, field } = args.constraints[0] as IsUniqueOptions;
     const columnName = field ?? args.property;
+    const currentId = this.requestContext.getRequest()?.params?.id;
 
     const repo = this.dataSource.getRepository(entity);
-    const existing = await repo.findOne({
-      where: { [columnName]: value } as Record<string, unknown>,
-    });
 
+    const whereCondition = {
+      [columnName]: value,
+    };
+
+    if (currentId) {
+      whereCondition.id = Not(currentId);
+    }
+    console.log(whereCondition);
+
+    const existing = await repo.findOne({ where: whereCondition });
     // Return true (valid) when no existing record is found
     return existing === null;
   }
