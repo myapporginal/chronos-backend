@@ -38,7 +38,6 @@ export class IsUniqueConstraint implements ValidatorConstraintInterface {
     if (currentId) {
       whereCondition.id = Not(currentId);
     }
-    console.log(whereCondition);
 
     const existing = await repo.findOne({ where: whereCondition });
     // Return true (valid) when no existing record is found
