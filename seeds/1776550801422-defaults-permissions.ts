@@ -28,6 +28,16 @@ export class DefaultsPermissions1776550801422 implements Seeder {
         name: 'save:companies',
         description: 'Guardar empresas',
       },
+      {
+        id: '260c1274-b925-400c-ba5c-32cd5db19771',
+        name: 'save:positions:own-company',
+        description: 'Guardar cargos de la empresa',
+      },
+      {
+        id: 'e6c8f5d1-2c4e-4b0a-9f3d-1e7c6b8d4a5f',
+        name: 'view:positions:own-company',
+        description: 'Ver cargos de la empresa',
+      },
     ];
 
     for (const permission of permissions) {

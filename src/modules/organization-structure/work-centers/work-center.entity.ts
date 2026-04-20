@@ -2,11 +2,10 @@ import { BaseEntity } from '@common/utils/entities/base.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { WorkArea } from '../work-areas/work-area.entity';
 import { Position } from '../positions/position.entity';
-import { Employee } from '../employees/employee.entity';
 
 @Entity('work_centers')
 export class WorkCenter extends BaseEntity {
-  @Column({ name: 'company_id' })
+  @Column({ name: 'company_id', type: 'uuid' })
   companyId!: string;
 
   @Column({ length: 200 })
@@ -36,6 +35,6 @@ export class WorkCenter extends BaseEntity {
   @OneToMany(() => Position, (position) => position.workCenter)
   positions!: Position[];
 
-  @OneToMany(() => Employee, (employee) => employee.workCenter)
-  employees!: Employee[];
+  // @OneToMany(() => Employee, (employee) => employee.workCenter)
+  // employees!: Employee[];
 }

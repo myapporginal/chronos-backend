@@ -5,6 +5,7 @@ import { Request } from 'express';
 import { PERMISSIONS_KEY } from '../decorators/require-permissions.decorator';
 import { UnauthorizedException } from '@common/exceptions/unauthorized.exception';
 import { ForbiddenException } from '@common/exceptions/forbidden.exception';
+import { IS_PUBLIC_KEY } from '@common/decorators/is-public-route.decorator';
 
 // Extends the User interface to include the companyId and role
 export interface RequestWithUser extends Request {
@@ -24,6 +25,15 @@ export class TenantPermissionsGuard implements CanActivate {
       PERMISSIONS_KEY,
       [context.getHandler(), context.getClass()],
     );
+
+    const publicRoutes = this.reflector.getAllAndOverride<boolean>(
+      IS_PUBLIC_KEY,
+      [context.getHandler(), context.getClass()],
+    );
+
+    if (publicRoutes) {
+      return true;
+    }
 
     const request = context.switchToHttp().getRequest<RequestWithUser>();
 

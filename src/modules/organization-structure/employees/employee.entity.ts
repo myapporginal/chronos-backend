@@ -1,6 +1,5 @@
 import { DocumentType } from '@modules/access-control/common/utils/enums';
 import { Column, JoinColumn, ManyToOne, Entity } from 'typeorm';
-import { WorkCenter } from '../work-centers/work-center.entity';
 import { Position } from '../positions/position.entity';
 import { BaseEntity } from '@common/utils/entities/base.entity';
 
@@ -38,11 +37,11 @@ export class Employee extends BaseEntity {
   isActive!: boolean;
 
   // Relations
-  @ManyToOne(() => WorkCenter, (workCenter) => workCenter.employees, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: 'work_center_id' })
-  workCenter!: WorkCenter;
+  // @ManyToOne(() => WorkCenter, (workCenter) => workCenter.employees, {
+  //   onDelete: 'CASCADE',
+  // })
+  // @JoinColumn({ name: 'work_center_id' })
+  // workCenter!: WorkCenter;
 
   @ManyToOne(() => Position, (position) => position.employees, {
     onDelete: 'RESTRICT',

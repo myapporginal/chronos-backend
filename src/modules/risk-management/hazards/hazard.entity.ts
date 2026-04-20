@@ -1,7 +1,6 @@
 import { BaseEntity } from '@common/utils/entities/base.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { HazardFamily } from '../hazard-families/hazard-family.entity';
-import { RiskAssessment } from '../risk-assesment/risk-assessment.entity';
 
 @Entity('hazards')
 export class Hazard extends BaseEntity {
@@ -30,6 +29,6 @@ export class Hazard extends BaseEntity {
   @JoinColumn({ name: 'hazard_family_id' })
   hazardFamily!: HazardFamily;
 
-  @OneToMany(() => RiskAssessment, (ra) => ra.hazard)
-  riskAssessments!: RiskAssessment[];
+  // @OneToMany(() => RiskAssessment, (ra) => ra.hazard)
+  // riskAssessments!: RiskAssessment[];
 }

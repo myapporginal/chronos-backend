@@ -1,5 +1,5 @@
 import { BaseEntity } from '@common/utils/entities/base.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import {
   InterventionLevel,
   RiskAcceptability,
@@ -7,10 +7,7 @@ import {
 } from '../common/utils/enums';
 import { Company } from '@modules/organization-structure/companies/companies.entity';
 import { WorkCenter } from '@modules/organization-structure/work-centers/work-center.entity';
-import { WorkArea } from '@modules/organization-structure/work-areas/work-area.entity';
 import { Position } from '@modules/organization-structure/positions/position.entity';
-import { Hazard } from '../hazards/hazard.entity';
-import { ControlMeasure } from '../control-measures/control-measure.entity';
 
 @Entity('risk_assessments')
 export class RiskAssessment extends BaseEntity {
@@ -103,24 +100,24 @@ export class RiskAssessment extends BaseEntity {
   @JoinColumn({ name: 'work_center_id' })
   workCenter!: WorkCenter;
 
-  @ManyToOne(() => WorkArea, (wa) => wa.riskAssessments, {
-    onDelete: 'RESTRICT',
-  })
-  @JoinColumn({ name: 'work_area_id' })
-  workArea!: WorkArea;
+  // @ManyToOne(() => WorkArea, (wa) => wa.riskAssessments, {
+  //   onDelete: 'RESTRICT',
+  // })
+  // @JoinColumn({ name: 'work_area_id' })
+  // workArea!: WorkArea;
 
   @ManyToOne(() => Position, (p) => p.riskAssessments, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'position_id' })
   position!: Position;
 
-  @ManyToOne(() => Hazard, (h) => h.riskAssessments, { onDelete: 'RESTRICT' })
-  @JoinColumn({ name: 'hazard_id' })
-  hazard!: Hazard;
+  // @ManyToOne(() => Hazard, (h) => h.riskAssessments, { onDelete: 'RESTRICT' })
+  // @JoinColumn({ name: 'hazard_id' })
+  // hazard!: Hazard;
 
   // @ManyToOne(() => User, (u) => u.riskAssessments, { onDelete: 'RESTRICT' })
   // @JoinColumn({ name: 'responsible_id' })
   // responsible!: User;
 
-  @OneToMany(() => ControlMeasure, (cm) => cm.riskAssessment)
-  controlMeasures!: ControlMeasure[];
+  // @OneToMany(() => ControlMeasure, (cm) => cm.riskAssessment)
+  // controlMeasures!: ControlMeasure[];
 }

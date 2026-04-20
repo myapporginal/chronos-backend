@@ -12,6 +12,7 @@ import { NotFoundException } from '@common/exceptions/not-found.exception';
 
 export interface FindAllOptions {
   relations?: string[];
+  where?: ObjectLiteral;
 }
 
 /**
@@ -41,6 +42,17 @@ export abstract class BaseCrudService<T extends ObjectLiteral> {
       for (const relation of options.relations) {
         qb.leftJoinAndSelect(`${alias}.${relation}`, relation);
       }
+    }
+
+    // Load the where conditions
+    if (options?.where) {
+      Object.entries(options.where).forEach(([key, value]) => {
+        const safeValue = value as unknown;
+
+        qb.andWhere(`${alias}.${key} = :internal_${key}`, {
+          [`internal_${key}`]: safeValue,
+        });
+      });
     }
 
     this.applyFilters(qb, alias, parsedFilters);
@@ -103,7 +115,7 @@ export abstract class BaseCrudService<T extends ObjectLiteral> {
    * Applies all provided filter conditions to the query builder using AND logic.
    * Each filter maps to a typed SQL condition based on its operator.
    */
-  private applyFilters(
+  protected applyFilters(
     qb: SelectQueryBuilder<T>,
     alias: string,
     filters: FilterDto[],

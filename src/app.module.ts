@@ -29,6 +29,6 @@ import { RequestContextMiddleware } from '@common/middlewares/request-context.mi
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(RequestContextMiddleware).forRoutes('*');
+    consumer.apply(RequestContextMiddleware).forRoutes('/v1');
   }
 }
