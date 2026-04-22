@@ -29,7 +29,7 @@ export class PositionsService extends BaseCrudService<Position> {
     const qb = this.repository.createQueryBuilder(alias);
 
     qb.innerJoinAndSelect(`${alias}.workCenter`, 'workCenter');
-    qb.where('workCenter.companyId = :tenantId', { tenantId });
+    qb.where('workCenter.company_id = :tenantId', { tenantId });
 
     this.applyFilters(qb, alias, parsedFilters);
 

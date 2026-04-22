@@ -18,6 +18,7 @@ import { PaginatedResponse } from '@common/dtos/paginated-response.dto';
 import { ServicePayload } from '@common/interfaces/api-response.interface';
 import { RequirePermissions } from '@common/decorators/require-permissions.decorator';
 import type { RequestWithUser } from '@common/guards/tenant-permissions.guard';
+import { UnauthorizedException } from '@common/exceptions/unauthorized.exception';
 
 @Controller({
   path: 'positions',
@@ -34,7 +35,7 @@ export class PositionsController {
     @Request() req: RequestWithUser,
   ): Promise<PaginatedResponse<Position>> {
     if (!req.tenantId) {
-      throw new Error('Tenant ID is required');
+      throw new UnauthorizedException();
     }
 
     return await this.positionsService.findAllForTenant(
