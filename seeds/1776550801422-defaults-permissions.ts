@@ -38,6 +38,16 @@ export class DefaultsPermissions1776550801422 implements Seeder {
         name: 'view:positions:own-company',
         description: 'Ver cargos de la empresa',
       },
+      {
+        id: 'f63f8158-4a7d-46ed-9bb0-9dbe70a80e99',
+        name: 'view:work-centers:own-company',
+        description: 'Ver centros de trabajo de la empresa',
+      },
+      {
+        id: 'ef60a4c8-3dd8-4c55-ab8e-f2260ecacc65',
+        name: 'save:work-centers:own-company',
+        description: 'Guardar centros de trabajo de la empresa',
+      },
     ];
 
     for (const permission of permissions) {
