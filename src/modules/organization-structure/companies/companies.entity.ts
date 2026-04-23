@@ -2,6 +2,8 @@ import { BaseEntity } from '@common/utils/entities/base.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { Expose } from 'class-transformer';
 import { User } from '@modules/access-control/users/user.entity';
+import { WorkCenter } from '../work-centers/work-center.entity';
+import { Role } from '@modules/access-control/roles/role.entity';
 
 @Entity('companies')
 export class Company extends BaseEntity {
@@ -39,11 +41,15 @@ export class Company extends BaseEntity {
   isActive!: boolean;
 
   // Relations
-  // @OneToMany(() => WorkCenter, (workCenter) => workCenter.company)
-  // workCenters!: WorkCenter[];
+  @OneToMany(() => WorkCenter, (workCenter) => workCenter.company)
+  @Expose({ name: 'work_centers' })
+  workCenters!: WorkCenter[];
 
   @OneToMany(() => User, (user) => user.company)
   users!: User[];
+
+  @OneToMany(() => Role, (role) => role.company)
+  roles!: Role[];
 
   // @OneToMany(() => Hazard, (hazard) => hazard.company)
   // hazards!: Hazard[];

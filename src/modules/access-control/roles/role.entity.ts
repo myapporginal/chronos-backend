@@ -1,7 +1,8 @@
 import { BaseEntity } from '@common/utils/entities/base.entity';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { RolePermission } from '../role-permissions/role-permission.entity';
 import { User } from '../users/user.entity';
+import { Company } from '@modules/organization-structure/companies/companies.entity';
 
 @Entity('roles')
 export class Role extends BaseEntity {
@@ -19,6 +20,13 @@ export class Role extends BaseEntity {
 
   @OneToMany(() => RolePermission, (rolePermission) => rolePermission.role)
   rolePermissions!: RolePermission[];
+
+  @ManyToOne(() => Company, (company) => company.roles, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'company_id' })
+  company!: Company;
 
   @OneToMany(() => User, (user) => user.role)
   users!: User[];

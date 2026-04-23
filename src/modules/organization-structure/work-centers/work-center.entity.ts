@@ -1,8 +1,9 @@
 import { BaseEntity } from '@common/utils/entities/base.entity';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { WorkArea } from '../work-areas/work-area.entity';
 import { Position } from '../positions/position.entity';
 import { Expose } from 'class-transformer';
+import { Company } from '../companies/companies.entity';
 
 @Entity('work_centers')
 export class WorkCenter extends BaseEntity {
@@ -40,6 +41,13 @@ export class WorkCenter extends BaseEntity {
 
   @OneToMany(() => Position, (position) => position.workCenter)
   positions!: Position[];
+
+  @ManyToOne(() => Company, (company) => company.workCenters, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'company_id' })
+  company!: Company;
 
   // @OneToMany(() => Employee, (employee) => employee.workCenter)
   // employees!: Employee[];

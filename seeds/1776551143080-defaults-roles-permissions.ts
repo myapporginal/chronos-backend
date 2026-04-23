@@ -29,6 +29,26 @@ export class DefaultsRolesPermissions1776551143080 implements Seeder {
         roleId: roleSuperAdmin,
         permissionId: 'c04f6a21-8b3b-497e-8462-706b8707d02f',
       },
+      {
+        id: 'e8aa3a46-3726-4ca2-8d54-e51a2c0f0ecd',
+        roleId: roleSuperAdmin,
+        permissionId: '260c1274-b925-400c-ba5c-32cd5db19771',
+      },
+      {
+        id: 'd942f446-a37d-4896-8d47-5870a8f818e6',
+        roleId: roleSuperAdmin,
+        permissionId: 'e6c8f5d1-2c4e-4b0a-9f3d-1e7c6b8d4a5f',
+      },
+      {
+        id: '5b0f372a-16dc-49cd-a937-b5670a823e04',
+        roleId: roleSuperAdmin,
+        permissionId: 'f63f8158-4a7d-46ed-9bb0-9dbe70a80e99',
+      },
+      {
+        id: 'ab446f26-5a0a-4b72-b5d7-9235a663e505',
+        roleId: roleSuperAdmin,
+        permissionId: 'ef60a4c8-3dd8-4c55-ab8e-f2260ecacc65',
+      },
     ];
 
     for (const permission of permissions) {
