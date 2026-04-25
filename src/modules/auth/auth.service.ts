@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { UnauthorizedException } from '@common/exceptions/unauthorized.exception';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { MeDto } from '@modules/access-control/users/dtos/me.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class AuthService {
@@ -32,5 +34,27 @@ export class AuthService {
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
+  }
+
+  async me(email: string): Promise<MeDto> {
+    const user = await this.usersService.findOneByEmail(email);
+    if (!user) throw new UnauthorizedException();
+    console.log(user.role?.rolePermissions);
+
+    return plainToInstance(
+      MeDto,
+      {
+        ...user,
+        role: {
+          id: user.role.id,
+          name: user.role.name,
+        },
+        scopes:
+          user.role?.rolePermissions
+            ?.map((rp) => rp.permission?.name)
+            .filter(Boolean) || [],
+      },
+      { excludeExtraneousValues: true, ignoreDecorators: true },
+    );
   }
 }
