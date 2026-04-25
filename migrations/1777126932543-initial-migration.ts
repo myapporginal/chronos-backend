@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class InitialMigration1776971547308 implements MigrationInterface {
-  name = 'InitialMigration1776971547308';
+export class InitialMigration1777126932543 implements MigrationInterface {
+  name = 'InitialMigration1777126932543';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -14,22 +14,22 @@ export class InitialMigration1776971547308 implements MigrationInterface {
       `CREATE TABLE "roles" ("id" uuid NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "company_id" uuid, "name" character varying(255) NOT NULL, "description" text, "is_active" boolean NOT NULL DEFAULT true, CONSTRAINT "UQ_648e3f5447f725579d7d4ffdfb7" UNIQUE ("name"), CONSTRAINT "PK_c1433d71a4838793a49dcad46ab" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "users" ("id" uuid NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "company_id" uuid, "email" character varying(255) NOT NULL, "password" character varying(255) NOT NULL, "first_name" character varying(100) NOT NULL, "last_name" character varying(100) NOT NULL, "role_id" uuid NOT NULL, "is_active" boolean NOT NULL DEFAULT true, "last_login_at" TIMESTAMP, CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"), CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
       `CREATE TABLE "work_areas" ("id" uuid NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "work_center_id" uuid NOT NULL, "name" character varying(200) NOT NULL, "description" text, CONSTRAINT "PK_50b32ea86ee7096cc58345f887e" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TYPE "public"."employees_document_type_enum" AS ENUM('CC', 'CE', 'PA', 'TI', 'RC', 'NU')`,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "employees" ("id" uuid NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "work_center_id" uuid NOT NULL, "position_id" uuid NOT NULL, "user_id" uuid, "first_name" character varying(100) NOT NULL, "last_name" character varying(100) NOT NULL, "document_type" "public"."employees_document_type_enum" NOT NULL, "document_number" character varying(20) NOT NULL, "entry_date" date NOT NULL, "exit_date" date, "is_active" boolean NOT NULL DEFAULT true, CONSTRAINT "PK_b9535a98350d5b26e7eb0c26af4" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "work_centers" ("id" uuid NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "company_id" uuid NOT NULL, "name" character varying(200) NOT NULL, "address" character varying(300), "city" character varying(100), "department" character varying(100), "employee_count" integer NOT NULL DEFAULT '0', "is_main" boolean NOT NULL DEFAULT false, "is_active" boolean NOT NULL DEFAULT true, CONSTRAINT "PK_efd461c689b6b2894c3ab1c930a" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "positions" ("id" uuid NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "work_center_id" uuid NOT NULL, "name" character varying(200) NOT NULL, "description" text, "risk_level" smallint, "is_active" boolean NOT NULL DEFAULT true, CONSTRAINT "PK_17e4e62ccd5749b289ae3fae6f3" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "work_centers" ("id" uuid NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "company_id" uuid NOT NULL, "name" character varying(200) NOT NULL, "address" character varying(300), "city" character varying(100), "department" character varying(100), "employee_count" integer NOT NULL DEFAULT '0', "is_main" boolean NOT NULL DEFAULT false, "is_active" boolean NOT NULL DEFAULT true, CONSTRAINT "PK_efd461c689b6b2894c3ab1c930a" PRIMARY KEY ("id"))`,
+      `CREATE TYPE "public"."employees_document_type_enum" AS ENUM('CC', 'CE', 'PA', 'TI', 'RC', 'NU')`,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "employees" ("id" uuid NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "work_center_id" uuid NOT NULL, "position_id" uuid, "user_id" uuid, "first_name" character varying(100) NOT NULL, "last_name" character varying(100) NOT NULL, "document_type" "public"."employees_document_type_enum" NOT NULL, "document_number" character varying(20) NOT NULL, "entry_date" date NOT NULL, "exit_date" date, "is_active" boolean NOT NULL DEFAULT true, CONSTRAINT "REL_2d83c53c3e553a48dadb9722e3" UNIQUE ("user_id"), CONSTRAINT "PK_b9535a98350d5b26e7eb0c26af4" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "users" ("id" uuid NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "company_id" uuid, "email" character varying(255) NOT NULL, "password" character varying(255) NOT NULL, "first_name" character varying(100) NOT NULL, "last_name" character varying(100) NOT NULL, "role_id" uuid NOT NULL, "is_active" boolean NOT NULL DEFAULT true, "last_login_at" TIMESTAMP, CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"), CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "companies" ("id" uuid NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "nit" character varying NOT NULL, "name" character varying NOT NULL, "economic_activity" character varying(10) NOT NULL, "risk_class" smallint NOT NULL, "employee_count" integer NOT NULL DEFAULT '0', "city" character varying(100) NOT NULL, "department" character varying(100) NOT NULL, "arl_name" character varying(100), "is_active" boolean NOT NULL DEFAULT true, CONSTRAINT "UQ_ed61d4dcafb6fe0f595f5e0cbd0" UNIQUE ("nit"), CONSTRAINT "PK_d4bc3e82a314fa9e29f652c2c22" PRIMARY KEY ("id"))`,
@@ -71,22 +71,28 @@ export class InitialMigration1776971547308 implements MigrationInterface {
       `ALTER TABLE "roles" ADD CONSTRAINT "FK_4bc1204a05dde26383e3955b0a1" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
     await queryRunner.query(
-      `ALTER TABLE "users" ADD CONSTRAINT "FK_7ae6334059289559722437bcc1c" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "users" ADD CONSTRAINT "FK_a2cecd1a3531c0b041e29ba46e1" FOREIGN KEY ("role_id") REFERENCES "roles"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "work_areas" ADD CONSTRAINT "FK_ca35a20300f87cf9ecb71adbe24" FOREIGN KEY ("work_center_id") REFERENCES "work_centers"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "employees" ADD CONSTRAINT "FK_8b14204e8af5e371e36b8c11e1b" FOREIGN KEY ("position_id") REFERENCES "positions"("id") ON DELETE RESTRICT ON UPDATE NO ACTION`,
+      `ALTER TABLE "work_centers" ADD CONSTRAINT "FK_5b5596e4575fd263f6ab047d34f" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
     await queryRunner.query(
       `ALTER TABLE "positions" ADD CONSTRAINT "FK_27dd11335bd3f64ea16fbb0e19c" FOREIGN KEY ("work_center_id") REFERENCES "work_centers"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "work_centers" ADD CONSTRAINT "FK_5b5596e4575fd263f6ab047d34f" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+      `ALTER TABLE "employees" ADD CONSTRAINT "FK_d135f48cbe14991707646a4c5d0" FOREIGN KEY ("work_center_id") REFERENCES "work_centers"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "employees" ADD CONSTRAINT "FK_8b14204e8af5e371e36b8c11e1b" FOREIGN KEY ("position_id") REFERENCES "positions"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "employees" ADD CONSTRAINT "FK_2d83c53c3e553a48dadb9722e38" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "users" ADD CONSTRAINT "FK_7ae6334059289559722437bcc1c" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "users" ADD CONSTRAINT "FK_a2cecd1a3531c0b041e29ba46e1" FOREIGN KEY ("role_id") REFERENCES "roles"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "risk_assessments" ADD CONSTRAINT "FK_5c8aeed5a1cc7e6bf254664a585" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
@@ -116,22 +122,28 @@ export class InitialMigration1776971547308 implements MigrationInterface {
       `ALTER TABLE "risk_assessments" DROP CONSTRAINT "FK_5c8aeed5a1cc7e6bf254664a585"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "work_centers" DROP CONSTRAINT "FK_5b5596e4575fd263f6ab047d34f"`,
+      `ALTER TABLE "users" DROP CONSTRAINT "FK_a2cecd1a3531c0b041e29ba46e1"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "positions" DROP CONSTRAINT "FK_27dd11335bd3f64ea16fbb0e19c"`,
+      `ALTER TABLE "users" DROP CONSTRAINT "FK_7ae6334059289559722437bcc1c"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "employees" DROP CONSTRAINT "FK_2d83c53c3e553a48dadb9722e38"`,
     );
     await queryRunner.query(
       `ALTER TABLE "employees" DROP CONSTRAINT "FK_8b14204e8af5e371e36b8c11e1b"`,
     );
     await queryRunner.query(
+      `ALTER TABLE "employees" DROP CONSTRAINT "FK_d135f48cbe14991707646a4c5d0"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "positions" DROP CONSTRAINT "FK_27dd11335bd3f64ea16fbb0e19c"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "work_centers" DROP CONSTRAINT "FK_5b5596e4575fd263f6ab047d34f"`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "work_areas" DROP CONSTRAINT "FK_ca35a20300f87cf9ecb71adbe24"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "users" DROP CONSTRAINT "FK_a2cecd1a3531c0b041e29ba46e1"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "users" DROP CONSTRAINT "FK_7ae6334059289559722437bcc1c"`,
     );
     await queryRunner.query(
       `ALTER TABLE "roles" DROP CONSTRAINT "FK_4bc1204a05dde26383e3955b0a1"`,
@@ -162,14 +174,14 @@ export class InitialMigration1776971547308 implements MigrationInterface {
       `DROP TYPE "public"."risk_assessments_intervention_level_enum"`,
     );
     await queryRunner.query(`DROP TABLE "companies"`);
-    await queryRunner.query(`DROP TABLE "work_centers"`);
-    await queryRunner.query(`DROP TABLE "positions"`);
+    await queryRunner.query(`DROP TABLE "users"`);
     await queryRunner.query(`DROP TABLE "employees"`);
     await queryRunner.query(
       `DROP TYPE "public"."employees_document_type_enum"`,
     );
+    await queryRunner.query(`DROP TABLE "positions"`);
+    await queryRunner.query(`DROP TABLE "work_centers"`);
     await queryRunner.query(`DROP TABLE "work_areas"`);
-    await queryRunner.query(`DROP TABLE "users"`);
     await queryRunner.query(`DROP TABLE "roles"`);
     await queryRunner.query(`DROP TABLE "roles_permissions"`);
     await queryRunner.query(`DROP TABLE "permissions"`);

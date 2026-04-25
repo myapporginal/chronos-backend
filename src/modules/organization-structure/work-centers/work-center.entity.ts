@@ -4,6 +4,7 @@ import { WorkArea } from '../work-areas/work-area.entity';
 import { Position } from '../positions/position.entity';
 import { Expose } from 'class-transformer';
 import { Company } from '../companies/companies.entity';
+import { Employee } from '../employees/employee.entity';
 
 @Entity('work_centers')
 export class WorkCenter extends BaseEntity {
@@ -49,6 +50,6 @@ export class WorkCenter extends BaseEntity {
   @JoinColumn({ name: 'company_id' })
   company!: Company;
 
-  // @OneToMany(() => Employee, (employee) => employee.workCenter)
-  // employees!: Employee[];
+  @OneToMany(() => Employee, (employee) => employee.workCenter)
+  employees!: Employee[];
 }

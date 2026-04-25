@@ -1,7 +1,8 @@
 import { BaseEntity } from '@common/utils/entities/base.entity';
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import { Company } from '@modules/organization-structure/companies/companies.entity';
 import { Role } from '../roles/role.entity';
+import { Employee } from '@modules/organization-structure/employees/employee.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -42,8 +43,8 @@ export class User extends BaseEntity {
   @JoinColumn({ name: 'role_id' })
   role!: Role;
 
-  // @OneToMany(() => Employee, (employee) => employee.user)
-  // employees!: Employee[];
+  @OneToOne(() => Employee, (employee) => employee.user)
+  employee!: Employee[];
 
   // @OneToMany(() => RiskAssessment, (ra) => ra.responsible)
   // riskAssessments!: RiskAssessment[];

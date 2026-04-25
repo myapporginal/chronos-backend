@@ -4,6 +4,7 @@ import { PositionsModule } from './positions/positions.module';
 import { WorkCentersModule } from './work-centers/work-centers.module';
 import { RouterModule } from '@nestjs/core';
 import { WorkAreasModule } from './work-areas/work-areas.module';
+import { EmployeesModule } from './employees/employees.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { WorkAreasModule } from './work-areas/work-areas.module';
     PositionsModule,
     WorkCentersModule,
     WorkAreasModule,
+    EmployeesModule,
     RouterModule.register([
       {
         path: 'organization-structure',
@@ -19,6 +21,7 @@ import { WorkAreasModule } from './work-areas/work-areas.module';
           { path: '', module: PositionsModule },
           { path: '', module: WorkCentersModule },
           { path: '', module: WorkAreasModule },
+          { path: '', module: EmployeesModule },
         ],
       },
     ]),
