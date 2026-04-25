@@ -58,6 +58,11 @@ export class DefaultsPermissions1776550801422 implements Seeder {
         name: 'view:employees:own-company',
         description: 'Ver empleados de la empresa',
       },
+      {
+        id: '05d7d0d5-54de-4f40-82b5-a7d79e9c0286',
+        name: 'show:hazard-families',
+        description: 'Ver familias de peligros',
+      },
     ];
 
     for (const permission of permissions) {

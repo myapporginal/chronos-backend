@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AccessControlModule } from './modules/access-control/access-control.module';
 import { RequestContextService } from '@common/utils/services/request-context.service';
 import { RequestContextMiddleware } from '@common/middlewares/request-context.middleware';
+import { RiskManagementModule } from './modules/risk-management/risk-management.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { RequestContextMiddleware } from '@common/middlewares/request-context.mi
     OrganizationStructureModule,
     AuthModule,
     AccessControlModule,
+    RiskManagementModule,
   ],
   providers: [IsUniqueConstraint, RequestContextService],
 })

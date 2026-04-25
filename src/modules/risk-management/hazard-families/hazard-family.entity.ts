@@ -5,7 +5,7 @@ import { Hazard } from '../hazards/hazard.entity';
 @Entity('hazard_families')
 export class HazardFamily extends BaseEntity {
   // Code of clasification by GTC-45
-  @Column({ name: 'code', length: 10 })
+  @Column({ name: 'code', length: 20 })
   code!: string;
 
   @Column({ length: 100 })
