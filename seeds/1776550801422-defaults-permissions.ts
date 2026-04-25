@@ -63,6 +63,16 @@ export class DefaultsPermissions1776550801422 implements Seeder {
         name: 'show:hazard-families',
         description: 'Ver familias de peligros',
       },
+      {
+        id: '12f049b6-e2f0-467d-a328-f4605d4aa7b4',
+        name: 'view:hazards:own-company',
+        description: 'Ver peligros de la empresa',
+      },
+      {
+        id: '1f313c44-2c98-4f06-997e-e5b76d2248f8',
+        name: 'save:hazards:own-company',
+        description: 'Guardar peligros de la empresa',
+      },
     ];
 
     for (const permission of permissions) {
