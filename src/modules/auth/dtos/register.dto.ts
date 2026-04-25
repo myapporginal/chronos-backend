@@ -1,14 +1,14 @@
 import { CreateOrUpdateUserDto } from '@modules/access-control/users/dtos/create-or-update.dto';
 import { CreateOrUpdateCompanyDto } from '@modules/organization-structure/companies/dtos/create-or-update.dto';
 import { Type } from 'class-transformer';
-import { IsObject } from 'class-validator';
+import { ValidateNested } from 'class-validator';
 
 export class RegisterDto {
-  @IsObject()
+  @ValidateNested({ each: true })
   @Type(() => CreateOrUpdateCompanyDto)
   company!: CreateOrUpdateCompanyDto;
 
-  @IsObject()
+  @ValidateNested({ each: true })
   @Type(() => CreateOrUpdateUserDto)
   user!: CreateOrUpdateUserDto;
 }

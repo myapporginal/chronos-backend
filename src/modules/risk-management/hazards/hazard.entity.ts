@@ -1,14 +1,17 @@
 import { BaseEntity } from '@common/utils/entities/base.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { HazardFamily } from '../hazard-families/hazard-family.entity';
+import { Expose } from 'class-transformer';
 
 @Entity('hazards')
 export class Hazard extends BaseEntity {
   @Column({ name: 'hazard_family_id' })
+  @Expose({ name: 'hazard_family_id' })
   hazardFamilyId!: string;
 
   /** Null means this hazard is a global/catalog entry not tied to a specific company */
   @Column({ name: 'company_id', nullable: true, type: 'uuid' })
+  @Expose({ name: 'company_id' })
   companyId!: string | null;
 
   @Column({ length: 255 })
@@ -19,6 +22,7 @@ export class Hazard extends BaseEntity {
 
   /** Effects on health or security */
   @Column({ name: 'possible_effects', type: 'text', nullable: true })
+  @Expose({ name: 'possible_effects' })
   possibleEffects!: string | null;
 
   // ── Relationships ─────────────────────────────────────────────────────────

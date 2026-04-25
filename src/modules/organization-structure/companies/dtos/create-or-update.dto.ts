@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsString,
   Max,
+  MaxLength,
   Min,
 } from 'class-validator';
 import { IsUnique } from '@common/decorators/is-unique.decorator';
@@ -29,6 +30,9 @@ export class CreateOrUpdateCompanyDto {
 
   @IsNotEmpty({ message: 'La actividad económica es requerida.' })
   @IsString({ message: 'La actividad económica debe ser una cadena de texto.' })
+  @MaxLength(10, {
+    message: 'La actividad económica debe tener máximo 10 caracteres.',
+  })
   @Expose({ name: 'economic_activity' })
   economicActivity!: string;
 
@@ -44,14 +48,23 @@ export class CreateOrUpdateCompanyDto {
   employeeCount!: number;
 
   @IsString({ message: 'La ciudad debe ser una cadena de texto.' })
+  @MaxLength(100, {
+    message: 'La ciudad debe tener máximo 100 caracteres.',
+  })
   city!: string;
 
   @IsString({ message: 'El departamento debe ser una cadena de texto.' })
+  @MaxLength(100, {
+    message: 'El departamento debe tener máximo 100 caracteres.',
+  })
   department!: string;
 
   @IsString({ message: 'El nombre de la ARL debe ser una cadena de texto.' })
   @IsOptional()
   @Expose({ name: 'arl_name' })
+  @MaxLength(100, {
+    message: 'El nombre de la ARL debe tener máximo 100 caracteres.',
+  })
   arlName!: string | null;
 
   @IsBoolean({ message: 'El estado debe ser un booleano.' })
