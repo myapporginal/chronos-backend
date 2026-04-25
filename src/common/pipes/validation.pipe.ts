@@ -7,13 +7,11 @@ import {
 import { ValidationError } from 'class-validator';
 import { defaultMetadataStorage } from 'class-transformer/cjs/storage';
 
-/** Minimal type describing a single @Expose() metadata entry from class-transformer. */
 interface ExposedPropertyMetadata {
   propertyName: string;
   options?: { name?: string };
 }
 
-/** Minimal interface for the subset of MetadataStorage we rely on. */
 interface ExposableMetadataStorage {
   getExposedMetadatas: (
     target: new (...args: unknown[]) => unknown,
@@ -29,21 +27,49 @@ export class ValidationPipe extends NestValidationPipe {
       transform: true,
       stopAtFirstError: true,
       exceptionFactory: (errors: ValidationError[]) => {
-        const formattedErrors = errors.flatMap((err) => {
-          const messages = Object.values(err.constraints ?? {});
-          const fieldName = resolveExposedName(err);
-
-          return messages.map((message) => ({
-            field: fieldName,
-            // Replace internal property name with the API-facing exposed name
-            message: message.replace(err.property, fieldName),
-          }));
-        });
-
+        const formattedErrors = flattenErrors(errors);
         return new ValidationException(formattedErrors);
       },
     });
   }
+}
+
+/**
+ * Recursively flattens nested ValidationError trees into a flat list.
+ * Handles both direct constraint errors and nested children (from @ValidateNested).
+ */
+function flattenErrors(
+  errors: ValidationError[],
+  parentField?: string,
+): { field: string; message: string }[] {
+  return errors.flatMap((err) => {
+    const fieldName = buildFieldName(err, parentField);
+
+    // This error node has constraint messages → collect them
+    if (err.constraints) {
+      const messages = Object.values(err.constraints);
+      return messages.map((message) => ({
+        field: fieldName,
+        message: message.replace(err.property, fieldName),
+      }));
+    }
+
+    // No constraints here → recurse into children (nested DTO)
+    if (err.children?.length) {
+      return flattenErrors(err.children, fieldName);
+    }
+
+    return [];
+  });
+}
+
+/**
+ * Builds the dot-notation field path (e.g. "company.tax_id"),
+ * resolving @Expose({ name }) at each level.
+ */
+function buildFieldName(err: ValidationError, parentField?: string): string {
+  const exposedName = resolveExposedName(err);
+  return parentField ? `${parentField}.${exposedName}` : exposedName;
 }
 
 /**
