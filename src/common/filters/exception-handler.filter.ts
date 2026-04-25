@@ -4,6 +4,7 @@ import {
   ExceptionFilter,
   HttpStatus,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { AppException } from '@common/exceptions/app.exception';
 import { FieldError } from '@common/interfaces/api-response.interface';
@@ -13,16 +14,31 @@ import { Response } from 'express';
 export class ExceptionHandlerFilter implements ExceptionFilter {
   private readonly logger = new Logger(ExceptionHandlerFilter.name);
 
+  private isAppException(exception: unknown): exception is AppException {
+    return exception instanceof AppException;
+  }
+
+  private isNotFoundException(
+    exception: unknown,
+  ): exception is NotFoundException {
+    return exception instanceof NotFoundException;
+  }
+
   catch(exception: unknown, host: ArgumentsHost): void {
-    const isAppException = exception instanceof AppException;
+    const isAppException = this.isAppException(exception);
+    const isNotFoundException = this.isNotFoundException(exception);
 
     const status = isAppException
       ? exception.status
-      : HttpStatus.INTERNAL_SERVER_ERROR;
+      : isNotFoundException
+        ? HttpStatus.NOT_FOUND
+        : HttpStatus.INTERNAL_SERVER_ERROR;
 
     const detail = isAppException
       ? exception.message
-      : 'Ocurrió un error inesperado. Por favor, inténtalo más tarde.';
+      : isNotFoundException
+        ? 'El recurso solicitado no existe.'
+        : 'Ocurrió un error inesperado. Por favor, inténtalo más tarde.';
 
     const errors: FieldError[] = isAppException ? exception.errors : [];
 
