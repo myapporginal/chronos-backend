@@ -39,7 +39,6 @@ export class UsersService extends BaseCrudService<User> {
       },
     });
     if (!user) throw new UnauthorizedException();
-    console.log(user);
     return user;
   }
 

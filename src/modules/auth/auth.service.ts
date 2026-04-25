@@ -56,7 +56,6 @@ export class AuthService {
   async me(email: string): Promise<MeDto> {
     const user = await this.usersService.findOneByEmail(email);
     if (!user) throw new UnauthorizedException();
-    console.log(user.role?.rolePermissions);
 
     return plainToInstance(
       MeDto,
