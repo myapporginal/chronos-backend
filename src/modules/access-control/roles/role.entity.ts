@@ -4,6 +4,14 @@ import { RolePermission } from '../role-permissions/role-permission.entity';
 import { User } from '../users/user.entity';
 import { Company } from '@modules/organization-structure/companies/companies.entity';
 
+export const RoleEnum = {
+  SUPER_ADMIN: '0b09d0db-faac-4e6b-96f1-bcf702b136dc',
+  ADMIN: '55c2cd14-fa96-464b-a2c9-d2e193cda5cc',
+  USER: '4ed0b348-f6f5-433f-8ef9-63dd3b818958',
+} as const;
+
+export type RoleEnum = (typeof RoleEnum)[keyof typeof RoleEnum];
+
 @Entity('roles')
 export class Role extends BaseEntity {
   @Column({ name: 'company_id', nullable: true, type: 'uuid' })

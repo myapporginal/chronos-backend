@@ -5,11 +5,16 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { MeDto } from '@modules/access-control/users/dtos/me.dto';
 import { plainToInstance } from 'class-transformer';
+import { Company } from '@modules/organization-structure/companies/companies.entity';
+import { User } from '@modules/access-control/users/user.entity';
+import { RoleEnum } from '@modules/access-control/roles/role.entity';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
+    private readonly dataSource: DataSource,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -34,6 +39,18 @@ export class AuthService {
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
+  }
+
+  async register(company: Company, user: User): Promise<User> {
+    return await this.dataSource.transaction(async (manager) => {
+      const savedCompany = await manager.save(Company, company);
+
+      user.companyId = savedCompany.id;
+      user.roleId = RoleEnum.ADMIN;
+      user.password = await bcrypt.hash(user.password, 10);
+
+      return await manager.save(User, user);
+    });
   }
 
   async me(email: string): Promise<MeDto> {

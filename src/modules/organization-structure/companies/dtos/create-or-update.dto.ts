@@ -10,8 +10,14 @@ import {
 } from 'class-validator';
 import { IsUnique } from '@common/decorators/is-unique.decorator';
 import { Company } from '../companies.entity';
+import { IsUUID } from 'class-validator';
 
 export class CreateOrUpdateCompanyDto {
+  @IsUUID('4', { message: 'El id de la compañía debe ser un UUID.' })
+  @IsOptional()
+  @Expose({ name: 'id' })
+  id?: string | null;
+
   @IsNotEmpty({ message: 'El NIT es requerido.' })
   @IsString({ message: 'El NIT debe ser una cadena de texto.' })
   @IsUnique({ entity: Company })

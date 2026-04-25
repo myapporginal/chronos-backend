@@ -13,6 +13,10 @@ import { PublicRoute } from '@common/decorators/is-public-route.decorator';
 import * as tenantPermissionsGuard from '@common/guards/tenant-permissions.guard';
 import { ServicePayload } from '@common/interfaces/api-response.interface';
 import { MeDto } from '@modules/access-control/users/dtos/me.dto';
+import { RegisterDto } from './dtos/register.dto';
+import { Company } from '@modules/organization-structure/companies/companies.entity';
+import { plainToInstance } from 'class-transformer';
+import { User } from '@modules/access-control/users/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -23,6 +27,23 @@ export class AuthController {
   @PublicRoute()
   async login(@Body() { email, password }: LoginDto) {
     return await this.authService.signIn(email, password);
+  }
+
+  @Post('register')
+  @HttpCode(HttpStatus.CREATED)
+  @PublicRoute()
+  async register(@Body() registerDto: RegisterDto) {
+    const company = plainToInstance(Company, registerDto.company, {
+      ignoreDecorators: true,
+    });
+    const user = plainToInstance(User, registerDto.user, {
+      ignoreDecorators: true,
+    });
+
+    return {
+      detail: 'Usuario registrado correctamente.',
+      data: await this.authService.register(company, user),
+    };
   }
 
   @Get('me')

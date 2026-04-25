@@ -1,4 +1,4 @@
-import { Role } from '@modules/access-control/roles/role.entity';
+import { Role, RoleEnum } from '@modules/access-control/roles/role.entity';
 import { DataSource } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
 
@@ -8,13 +8,19 @@ export class DefaultsRoles1776451819557 implements Seeder {
   public async run(dataSource: DataSource): Promise<void> {
     const roles: Partial<Role>[] = [
       {
-        id: '0b09d0db-faac-4e6b-96f1-bcf702b136dc',
+        id: RoleEnum.SUPER_ADMIN,
         name: 'Super Admin',
         description: 'Administrador de todo el sistema',
         isActive: true,
       },
       {
-        id: '4ed0b348-f6f5-433f-8ef9-63dd3b818958',
+        id: RoleEnum.ADMIN,
+        name: 'Admin',
+        description: 'Administrador de la empresa',
+        isActive: true,
+      },
+      {
+        id: RoleEnum.USER,
         name: 'User',
         description: 'Usuario del sistema',
         isActive: true,

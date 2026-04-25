@@ -48,6 +48,16 @@ export class DefaultsPermissions1776550801422 implements Seeder {
         name: 'save:work-centers:own-company',
         description: 'Guardar centros de trabajo de la empresa',
       },
+      {
+        id: 'a096c1b2-0247-49d0-b294-3cfc1a224e9d',
+        name: 'save:employees:own-company',
+        description: 'Guardar empleados de la empresa',
+      },
+      {
+        id: 'c5ed8297-992e-4c17-9d8f-530aa29e40b4',
+        name: 'view:employees:own-company',
+        description: 'Ver empleados de la empresa',
+      },
     ];
 
     for (const permission of permissions) {

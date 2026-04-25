@@ -7,12 +7,15 @@ import { AppConfigService } from '@config/app.config';
 import { CustomConfigModule } from '@config/config.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '@modules/access-control/users/user.entity';
+import { Company } from '@modules/organization-structure/companies/companies.entity';
+import { CompaniesModule } from '@modules/organization-structure/companies/companies.module';
 
 @Module({
   imports: [
     UsersModule,
     CustomConfigModule,
-    TypeOrmModule.forFeature([User]),
+    CompaniesModule,
+    TypeOrmModule.forFeature([User, Company]),
     JwtModule.registerAsync({
       useFactory: (appConfigService: AppConfigService) => ({
         global: true,

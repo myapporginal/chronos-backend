@@ -9,5 +9,6 @@ import { User } from '@modules/access-control/users/user.entity';
   imports: [TypeOrmModule.forFeature([Company, User])],
   controllers: [CompaniesController],
   providers: [CompaniesService],
+  exports: [CompaniesService],
 })
 export class CompaniesModule {}
