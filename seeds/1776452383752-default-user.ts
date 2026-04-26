@@ -14,6 +14,7 @@ export class DefaultUser1776452383752 implements Seeder {
     defaultUser.firstName = 'Default';
     defaultUser.lastName = 'User';
     defaultUser.roleId = '0b09d0db-faac-4e6b-96f1-bcf702b136dc';
+    defaultUser.companyId = '570d759b-6b5f-46a7-a2ba-0699172b4782';
     defaultUser.isActive = true;
     defaultUser.lastLoginAt = new Date().toISOString();
 

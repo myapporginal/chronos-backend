@@ -2,6 +2,7 @@ import { BaseEntity } from '@common/utils/entities/base.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { HazardFamily } from '../hazard-families/hazard-family.entity';
 import { Expose } from 'class-transformer';
+import { Company } from '@modules/organization-structure/companies/companies.entity';
 
 @Entity('hazards')
 export class Hazard extends BaseEntity {
@@ -32,6 +33,12 @@ export class Hazard extends BaseEntity {
   })
   @JoinColumn({ name: 'hazard_family_id' })
   hazardFamily!: HazardFamily;
+
+  @ManyToOne(() => Company, (company) => company.hazards, {
+    onDelete: 'RESTRICT',
+  })
+  @JoinColumn({ name: 'company_id' })
+  company!: Company;
 
   // @OneToMany(() => RiskAssessment, (ra) => ra.hazard)
   // riskAssessments!: RiskAssessment[];

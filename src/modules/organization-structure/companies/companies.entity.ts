@@ -4,6 +4,7 @@ import { Expose } from 'class-transformer';
 import { User } from '@modules/access-control/users/user.entity';
 import { WorkCenter } from '../work-centers/work-center.entity';
 import { Role } from '@modules/access-control/roles/role.entity';
+import { Hazard } from '@modules/risk-management/hazards/hazard.entity';
 
 @Entity('companies')
 export class Company extends BaseEntity {
@@ -51,6 +52,6 @@ export class Company extends BaseEntity {
   @OneToMany(() => Role, (role) => role.company)
   roles!: Role[];
 
-  // @OneToMany(() => Hazard, (hazard) => hazard.company)
-  // hazards!: Hazard[];
+  @OneToMany(() => Hazard, (hazard) => hazard.company)
+  hazards!: Hazard[];
 }
