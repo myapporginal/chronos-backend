@@ -2,7 +2,7 @@ import { BaseEntity } from '@common/utils/entities/base.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { WorkCenter } from '../work-centers/work-center.entity';
 import { Employee } from '../employees/employee.entity';
-import { RiskAssessment } from '@modules/risk-management/risk-assesment/risk-assessment.entity';
+import { RiskAssessment } from '@modules/risk-management/risk-assessment/risk-assessment.entity';
 import { Expose } from 'class-transformer';
 
 @Entity('positions')

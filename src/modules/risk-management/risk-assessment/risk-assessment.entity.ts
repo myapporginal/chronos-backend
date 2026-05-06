@@ -12,44 +12,56 @@ import { WorkArea } from '@modules/organization-structure/work-areas/work-area.e
 import { Hazard } from '../hazards/hazard.entity';
 import { User } from '@modules/access-control/users/user.entity';
 import { ControlMeasure } from '../control-measures/control-measure.entity';
+import { Expose } from 'class-transformer';
 
 @Entity('risk_assessments')
 export class RiskAssessment extends BaseEntity {
-  @Column({ name: 'company_id' })
+  @Column({ name: 'company_id', type: 'uuid' })
+  @Expose({ name: 'company_id' })
   companyId!: string;
 
-  @Column({ name: 'work_center_id' })
-  workCenterId!: string;
+  @Column({ name: 'work_center_id', type: 'uuid', nullable: true })
+  @Expose({ name: 'work_center_id' })
+  workCenterId!: string | null;
 
-  @Column({ name: 'work_area_id' })
-  workAreaId!: string;
+  @Column({ name: 'work_area_id', type: 'uuid', nullable: true })
+  @Expose({ name: 'work_area_id' })
+  workAreaId!: string | null;
 
-  @Column({ name: 'position_id' })
-  positionId!: string;
+  @Column({ name: 'position_id', type: 'uuid', nullable: true })
+  @Expose({ name: 'position_id' })
+  positionId!: string | null;
 
-  @Column({ name: 'hazard_id' })
+  @Column({ name: 'hazard_id', type: 'uuid' })
+  @Expose({ name: 'hazard_id' })
   hazardId!: string;
 
-  @Column({ name: 'responsible_id' })
+  @Column({ name: 'responsible_id', type: 'uuid' })
+  @Expose({ name: 'responsible_id' })
   responsibleId!: string;
 
   // Productive process where the hazard is present
   @Column({ name: 'process_name', length: 200 })
+  @Expose({ name: 'process_name' })
   processName!: string;
 
   // Specific task or activity
   @Column({ length: 300 })
+  @Expose({ name: 'activity' })
   activity!: string;
 
   // Routine vs non-routine (Decreto 1072)
   @Column({ name: 'is_routine', default: true })
+  @Expose({ name: 'is_routine' })
   isRoutine!: boolean;
 
   @Column({ name: 'workers_exposed', type: 'int' })
+  @Expose({ name: 'workers_exposed' })
   workersExposed!: number;
 
   // Existing controls before the assessment
   @Column({ name: 'existing_controls', type: 'text', nullable: true })
+  @Expose({ name: 'existing_controls' })
   existingControls!: string | null;
 
   // ── GTC-45 Variables ────────────────────────────────────
@@ -73,12 +85,14 @@ export class RiskAssessment extends BaseEntity {
     type: 'enum',
     enum: InterventionLevel,
   })
+  @Expose({ name: 'intervention_level' })
   interventionLevel!: InterventionLevel;
 
   @Column({
     type: 'enum',
     enum: RiskAcceptability,
   })
+  @Expose({ name: 'acceptability' })
   acceptability!: RiskAcceptability;
 
   @Column({
@@ -86,13 +100,16 @@ export class RiskAssessment extends BaseEntity {
     enum: RiskStatus,
     default: RiskStatus.IDENTIFIED,
   })
+  @Expose({ name: 'status' })
   status!: RiskStatus;
 
   @Column({ name: 'last_review_date', type: 'date', nullable: true })
+  @Expose({ name: 'last_review_date' })
   lastReviewDate!: string | null;
 
   // Frecuencia mínima de revisión según Resolución 0312
   @Column({ name: 'next_review_date', type: 'date', nullable: true })
+  @Expose({ name: 'next_review_date' })
   nextReviewDate!: string | null;
 
   // Relaciones

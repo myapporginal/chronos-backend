@@ -3,7 +3,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { HazardFamily } from '../hazard-families/hazard-family.entity';
 import { Expose } from 'class-transformer';
 import { Company } from '@modules/organization-structure/companies/companies.entity';
-import { RiskAssessment } from '../risk-assesment/risk-assessment.entity';
+import { RiskAssessment } from '../risk-assessment/risk-assessment.entity';
 
 @Entity('hazards')
 export class Hazard extends BaseEntity {

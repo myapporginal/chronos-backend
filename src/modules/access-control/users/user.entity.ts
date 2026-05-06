@@ -10,7 +10,7 @@ import {
 import { Company } from '@modules/organization-structure/companies/companies.entity';
 import { Role } from '../roles/role.entity';
 import { Employee } from '@modules/organization-structure/employees/employee.entity';
-import { RiskAssessment } from '@modules/risk-management/risk-assesment/risk-assessment.entity';
+import { RiskAssessment } from '@modules/risk-management/risk-assessment/risk-assessment.entity';
 import { ControlMeasure } from '@modules/risk-management/control-measures/control-measure.entity';
 
 @Entity('users')

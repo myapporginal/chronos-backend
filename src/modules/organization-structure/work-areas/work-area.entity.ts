@@ -2,7 +2,7 @@ import { BaseEntity } from '@common/utils/entities/base.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Expose } from 'class-transformer';
 import { WorkCenter } from '../work-centers/work-center.entity';
-import { RiskAssessment } from '@modules/risk-management/risk-assesment/risk-assessment.entity';
+import { RiskAssessment } from '@modules/risk-management/risk-assessment/risk-assessment.entity';
 
 @Entity('work_areas')
 export class WorkArea extends BaseEntity {
